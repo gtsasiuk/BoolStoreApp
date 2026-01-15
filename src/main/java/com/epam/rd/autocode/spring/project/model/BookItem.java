@@ -1,13 +1,16 @@
 package com.epam.rd.autocode.spring.project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "BOOKITEMS")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class BookItem {
     @Id
@@ -22,6 +25,6 @@ public class BookItem {
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
     private Book book;
 
-    @Column
+    @Column(name = "quantity")
     private Integer quantity;
 }
