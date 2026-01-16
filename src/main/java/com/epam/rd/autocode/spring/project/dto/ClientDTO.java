@@ -1,5 +1,27 @@
 package com.epam.rd.autocode.spring.project.dto;
 
-public class ClientDTO{
-    // TODO Place your code here
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClientDTO {
+    @NotBlank
+    private String email;
+    @NotBlank
+    private String password;
+    @NotBlank
+    private String name;
+    @NotNull
+    @PositiveOrZero
+    private BigDecimal balance;
 }
