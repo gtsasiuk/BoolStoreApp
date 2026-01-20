@@ -1,6 +1,8 @@
 package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.ClientDTO;
+import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
+import com.epam.rd.autocode.spring.project.exception.NotFoundException;
 import com.epam.rd.autocode.spring.project.model.Client;
 import com.epam.rd.autocode.spring.project.repo.ClientRepository;
 import com.epam.rd.autocode.spring.project.service.ClientService;
@@ -18,6 +20,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDTO addClient(ClientDTO client) {
+        if (repository.existsByEmail(client.getEmail())) {
+            throw new AlreadyExistException("Client already exists");
+        }
         Client newClient = mapper.map(client, Client.class);
         Client savedClient = repository.save(newClient);
         return mapper.map(savedClient, ClientDTO.class);
@@ -32,14 +37,14 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDTO getClientByEmail(String email) {
         Client client = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
         return mapper.map(client, ClientDTO.class);
     }
 
     @Override
     public ClientDTO updateClientByEmail(String email, ClientDTO client) {
         Client existingClient = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
 
         existingClient.setEmail(client.getEmail());
         existingClient.setPassword(client.getPassword());
@@ -53,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteClientByEmail(String email) {
         Client client = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
         repository.delete(client);
     }
 }

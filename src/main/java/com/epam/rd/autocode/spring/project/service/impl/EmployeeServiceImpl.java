@@ -1,6 +1,8 @@
 package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.EmployeeDTO;
+import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
+import com.epam.rd.autocode.spring.project.exception.NotFoundException;
 import com.epam.rd.autocode.spring.project.model.Employee;
 import com.epam.rd.autocode.spring.project.repo.EmployeeRepository;
 import com.epam.rd.autocode.spring.project.service.EmployeeService;
@@ -18,6 +20,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO addEmployee(EmployeeDTO employee) {
+        if (repository.existsByEmail(employee.getEmail())) {
+            throw new AlreadyExistException("Employee already exists");
+        }
         Employee newEmployee = mapper.map(employee, Employee.class);
         Employee savedEmployee = repository.save(newEmployee);
         return mapper.map(savedEmployee, EmployeeDTO.class);
@@ -32,14 +37,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO getEmployeeByEmail(String email) {
         Employee employee = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
         return mapper.map(employee, EmployeeDTO.class);
     }
 
     @Override
     public EmployeeDTO updateEmployeeByEmail(String email, EmployeeDTO employee) {
         Employee existingEmployee = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
 
         existingEmployee.setEmail(employee.getEmail());
         existingEmployee.setPassword(employee.getPassword());
@@ -54,7 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployeeByEmail(String email) {
         Employee employee = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
         repository.delete(employee);
     }
 

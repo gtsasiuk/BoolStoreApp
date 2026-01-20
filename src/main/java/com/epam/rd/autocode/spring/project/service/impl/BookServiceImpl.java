@@ -1,6 +1,8 @@
 package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.BookDTO;
+import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
+import com.epam.rd.autocode.spring.project.exception.NotFoundException;
 import com.epam.rd.autocode.spring.project.model.Book;
 import com.epam.rd.autocode.spring.project.repo.BookRepository;
 import com.epam.rd.autocode.spring.project.service.BookService;
@@ -18,6 +20,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO addBook(BookDTO book) {
+        if (repository.existsByName(book.getName())) {
+            throw new AlreadyExistException("Book already exists");
+        }
         Book newBook = mapper.map(book, Book.class);
         Book savedBook = repository.save(newBook);
         return mapper.map(savedBook, BookDTO.class);
@@ -32,14 +37,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDTO getBookByName(String name) {
         Book book = repository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new NotFoundException("Book not found"));
         return mapper.map(book, BookDTO.class);
     }
 
     @Override
     public BookDTO updateBookByName(String name, BookDTO book) {
         Book existingBook = repository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new NotFoundException("Book not found"));
 
         existingBook.setName(book.getName());
         existingBook.setGenre(book.getGenre());
@@ -59,7 +64,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBookByName(String name) {
         Book book = repository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new NotFoundException("Book not found"));
         repository.delete(book);
     }
 }
