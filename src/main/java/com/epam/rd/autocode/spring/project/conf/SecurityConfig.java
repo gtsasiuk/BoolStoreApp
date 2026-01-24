@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/login", "/auth/register", "/books", "/books/**", "/h2-console", "/h2-console/**").permitAll()
+                        .requestMatchers("/", "/auth/login", "/auth/register", "/books", "/books/**", "/css/**", "/h2-console", "/h2-console/**").permitAll()
                         .requestMatchers("/profile").hasAnyRole("EMPLOYEE", "CUSTOMER")
                         .anyRequest().authenticated()
                 )

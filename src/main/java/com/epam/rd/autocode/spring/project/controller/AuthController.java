@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
-
 @Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
