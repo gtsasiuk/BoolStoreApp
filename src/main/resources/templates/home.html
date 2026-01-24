@@ -3,21 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>BookStore</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<h1>📚 Welcome to BookStore</h1>
+<header>
+    <div class="container">
+        <h2>📚 BookStore</h2>
+        <nav>
+            <a href="/books">Books</a>
+            <a href="/profile">Profile</a>
+            <a href="/auth/login">Login</a>
+            <a href="/auth/register">Register</a>
+        </nav>
+    </div>
+</header>
 
-<nav>
-    <a href="/books">Books</a> |
-    <a href="/profile">Profile</a> |
-    <a href="/auth/login">Login</a> |
-    <a href="/auth/register">Register</a>
-</nav>
-
-<hr/>
-
-<p>This is the home page.</p>
+<div class="container">
+    <div class="card">
+        <h1>Welcome to BookStore</h1>
+        <p>
+            Browse books, place orders and manage your account.
+        </p>
+    </div>
+</div>
 
 </body>
 </html>

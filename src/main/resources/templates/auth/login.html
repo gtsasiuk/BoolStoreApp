@@ -3,29 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<h2>Login</h2>
+<div class="container">
+  <div class="card" style="max-width: 400px; margin: auto;">
+    <h2>Login</h2>
 
-<form method="post" action="/auth/login">
-  <div>
-    <label>Email:</label>
-    <input type="email" name="email" required>
+    <form method="post" action="/auth/login">
+      <div>
+        <label>Email</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div>
+        <label>Password</label>
+        <input type="password" name="password" required>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="link">
+      Don’t have an account?
+      <a href="/auth/register">Register</a>
+    </div>
   </div>
-
-  <div>
-    <label>Password:</label>
-    <input type="password" name="password" required>
-  </div>
-
-  <button type="submit">Login</button>
-</form>
-
-<p>
-  Don't have an account?
-  <a href="/auth/register">Register</a>
-</p>
+</div>
 
 </body>
 </html>
