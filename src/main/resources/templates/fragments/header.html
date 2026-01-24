@@ -1,0 +1,31 @@
+<header th:fragment="header"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="container header-container">
+        <h2>📚 BookStore</h2>
+        <nav class="nav">
+            <span>
+                <a href="/">Home</a>
+                <a href="/books">Books</a>
+            </span>
+            <span sec:authorize="isAuthenticated()">
+                <a href="/profile">Profile</a>
+
+                <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                    Logout
+                </a>
+
+                <form id="logoutForm"
+                      th:action="@{/logout}"
+                      method="post"
+                      style="display:none;">
+                </form>
+            </span>
+            <span sec:authorize="!isAuthenticated()">
+                <a href="/auth/login">Login</a>
+                <a href="/auth/register">Register</a>
+            </span>
+        </nav>
+    </div>
+</header>
+

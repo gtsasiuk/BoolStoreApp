@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>BookStore</title>
@@ -7,17 +7,7 @@
 </head>
 <body>
 
-<header>
-    <div class="container">
-        <h2>📚 BookStore</h2>
-        <nav>
-            <a href="/books">Books</a>
-            <a href="/profile">Profile</a>
-            <a href="/auth/login">Login</a>
-            <a href="/auth/register">Register</a>
-        </nav>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container">
     <div class="card">
