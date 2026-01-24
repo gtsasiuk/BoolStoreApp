@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h2>📚 BookStore</h2>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/books">Books</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="card">
+
+        <h2>My Profile</h2>
+
+        <div th:if="${!edit}">
+            <p><strong>Name:</strong> <span th:text="${user.name}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+
+            <div th:if="${user.balance != null}">
+                <p><strong>Balance:</strong> $<span th:text="${user.balance}"></span></p>
+            </div>
+
+            <div th:if="${user.phone != null}">
+                <p><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
+                <p><strong>Birth Date:</strong> <span th:text="${user.birthDate}"></span></p>
+            </div>
+
+            <form th:action="@{/profile}" method="get">
+                <button type="submit" name="edit" value="true">Edit Profile</button>
+            </form>
+        </div>
+
+        <div th:if="${edit}">
+            <form th:action="@{/profile}" th:object="${user}" method="post">
+                <div>
+                    <label>Name:</label>
+                    <input type="text" th:field="*{name}" />
+                </div>
+
+                <div th:if="${user.balance != null}">
+                    <label>Balance:</label>
+                    <input type="number" th:field="*{balance}" step="0.01" />
+                </div>
+
+                <div th:if="${user.phone != null}">
+                    <label>Phone:</label>
+                    <input type="text" th:field="*{phone}" />
+                </div>
+
+                <div th:if="${user.birthDate != null}">
+                    <label>Birth Date:</label>
+                    <input type="date" th:field="*{birthDate}" />
+                </div>
+
+                <button type="submit">Save</button>
+                <a th:href="@{/profile}" class="link">Cancel</a>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
