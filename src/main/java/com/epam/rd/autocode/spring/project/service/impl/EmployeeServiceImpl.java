@@ -47,7 +47,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
         existingEmployee.setEmail(employee.getEmail());
-        existingEmployee.setPassword(employee.getPassword());
+        if (employee.getPassword() != null && !employee.getPassword().isBlank()) {
+            existingEmployee.setPassword(employee.getPassword());
+        }
+
         existingEmployee.setName(employee.getName());
         existingEmployee.setPhone(employee.getPhone());
         existingEmployee.setBirthDate(employee.getBirthDate());

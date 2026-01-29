@@ -47,7 +47,10 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
         existingClient.setEmail(client.getEmail());
-        existingClient.setPassword(client.getPassword());
+        if (client.getPassword() != null && !client.getPassword().isBlank()) {
+            existingClient.setPassword(client.getPassword());
+        }
+
         existingClient.setName(client.getName());
         existingClient.setBalance(client.getBalance());
         Client updatedClient = repository.save(existingClient);
