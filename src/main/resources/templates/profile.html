@@ -3,25 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<header>
-    <div class="container">
-        <h2>📚 BookStore</h2>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/books">Books</a>
-            <a href="/logout">Logout</a>
-        </nav>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<div class="container">
-    <div class="card">
-
-        <h2>My Profile</h2>
+<div class="container my-5">
+    <div class="card form-card p-4">
+        <h2 class="mb-4">My Profile</h2>
 
         <div th:if="${!edit}">
             <p><strong>Name:</strong> <span th:text="${user.name}"></span></p>
@@ -37,39 +28,30 @@
             </div>
 
             <form th:action="@{/profile}" method="get">
-                <button type="submit" name="edit" value="true">Edit Profile</button>
+                <button type="submit" class="btn btn-primary" name="edit" value="true">Edit Profile</button>
             </form>
         </div>
 
         <div th:if="${edit}">
             <form th:action="@{/profile}" th:object="${user}" method="post">
-                <div>
+                <div class="mb-3">
                     <label>Name:</label>
-                    <input type="text" th:field="*{name}" />
+                    <input type="text" th:field="*{name}" class="form-control" />
                 </div>
 
-                <div th:if="${user.balance != null}">
+                <div class="mb-3" th:if="${user.balance != null}">
                     <label>Balance:</label>
-                    <input type="number" th:field="*{balance}" step="0.01" />
+                    <input type="number" th:field="*{balance}" step="0.01" class="form-control" />
                 </div>
 
-                <div th:if="${user.phone != null}">
+                <div class="mb-3" th:if="${user.phone != null}">
                     <label>Phone:</label>
-                    <input type="text" th:field="*{phone}" />
+                    <input type="text" th:field="*{phone}" class="form-control" />
                 </div>
 
-                <div th:if="${user.birthDate != null}">
+                <div class="mb-3" th:if="${user.birthDate != null}">
                     <label>Birth Date:</label>
-                    <input type="date" th:field="*{birthDate}" />
+                    <input type="date" th:field="*{birthDate}" class="form-control" />
                 </div>
 
-                <button type="submit">Save</button>
-                <a th:href="@{/profile}" class="link">Cancel</a>
-            </form>
-        </div>
-
-    </div>
-</div>
-
-</body>
-</html>
+                <button type="submit" class="btn btn-primary">Save</butt
