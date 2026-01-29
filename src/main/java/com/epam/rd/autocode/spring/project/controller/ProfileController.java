@@ -1,6 +1,7 @@
 package com.epam.rd.autocode.spring.project.controller;
 
-import com.epam.rd.autocode.spring.project.dto.UserProfileDTO;
+import com.epam.rd.autocode.spring.project.dto.UserProfileUpdateDTO;
+import com.epam.rd.autocode.spring.project.dto.UserProfileViewDTO;
 import com.epam.rd.autocode.spring.project.service.ClientService;
 import com.epam.rd.autocode.spring.project.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -34,23 +35,27 @@ public class ProfileController {
     public String profilePage(Model model, Authentication authentication,
                               @RequestParam(value = "edit", required = false) Boolean edit) {
         String email = authentication.getName();
-        UserProfileDTO profile;
+        UserProfileViewDTO profile;
+        UserProfileUpdateDTO update;
 
         if (hasRole("ROLE_EMPLOYEE")) {
             var e = employeeService.getEmployeeByEmail(email);
-            profile = new UserProfileDTO(e.getName(), e.getEmail(), null, e.getPhone(), e.getBirthDate());
+            profile = new UserProfileViewDTO(e.getName(), e.getEmail(), null, e.getPhone(), e.getBirthDate());
+            update = new UserProfileUpdateDTO(e.getName(), null, e.getPhone(), e.getBirthDate());
         } else {
             var c = clientService.getClientByEmail(email);
-            profile = new UserProfileDTO(c.getName(), c.getEmail(), c.getBalance(), null, null);
+            profile = new UserProfileViewDTO(c.getName(), c.getEmail(), c.getBalance(), null, null);
+            update = new UserProfileUpdateDTO(c.getName(), c.getBalance(), null, null);
         }
 
         model.addAttribute("user", profile);
+        model.addAttribute("userUpdate", update);
         model.addAttribute("edit", edit != null && edit);
         return "profile";
     }
 
     @PostMapping
-    public String updateProfile(UserProfileDTO form, Authentication authentication) {
+    public String updateProfile(UserProfileUpdateDTO form, Authentication authentication) {
         String email = authentication.getName();
 
         if (hasRole("ROLE_EMPLOYEE")) {

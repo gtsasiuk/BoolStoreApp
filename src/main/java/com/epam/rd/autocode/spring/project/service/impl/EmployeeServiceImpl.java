@@ -46,7 +46,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee existingEmployee = repository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
-        existingEmployee.setEmail(employee.getEmail());
         if (employee.getPassword() != null && !employee.getPassword().isBlank()) {
             existingEmployee.setPassword(employee.getPassword());
         }

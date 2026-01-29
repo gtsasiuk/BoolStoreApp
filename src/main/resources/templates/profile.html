@@ -33,25 +33,31 @@
         </div>
 
         <div th:if="${edit}">
-            <form th:action="@{/profile}" th:object="${user}" method="post">
+            <form th:action="@{/profile}" th:object="${userUpdate}" method="post">
                 <div class="mb-3">
                     <label>Name:</label>
                     <input type="text" th:field="*{name}" class="form-control" />
                 </div>
 
-                <div class="mb-3" th:if="${user.balance != null}">
+                <div class="mb-3" th:if="${userUpdate.balance != null}">
                     <label>Balance:</label>
                     <input type="number" th:field="*{balance}" step="0.01" class="form-control" />
                 </div>
 
-                <div class="mb-3" th:if="${user.phone != null}">
+                <div class="mb-3" th:if="${userUpdate.phone != null}">
                     <label>Phone:</label>
                     <input type="text" th:field="*{phone}" class="form-control" />
                 </div>
 
-                <div class="mb-3" th:if="${user.birthDate != null}">
+                <div class="mb-3" th:if="${userUpdate.birthDate != null}">
                     <label>Birth Date:</label>
                     <input type="date" th:field="*{birthDate}" class="form-control" />
                 </div>
 
-                <button type="submit" class="btn btn-primary">Save</butt
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

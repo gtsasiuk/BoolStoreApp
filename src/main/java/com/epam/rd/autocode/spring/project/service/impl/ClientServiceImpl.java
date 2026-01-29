@@ -46,7 +46,6 @@ public class ClientServiceImpl implements ClientService {
         Client existingClient = repository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
-        existingClient.setEmail(client.getEmail());
         if (client.getPassword() != null && !client.getPassword().isBlank()) {
             existingClient.setPassword(client.getPassword());
         }

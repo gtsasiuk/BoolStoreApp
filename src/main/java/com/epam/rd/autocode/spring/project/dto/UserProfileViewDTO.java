@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileDTO {
+public class UserProfileViewDTO {
     @NotBlank
     private String name;
     @Email
@@ -22,13 +23,6 @@ public class UserProfileDTO {
     private String email;
     private BigDecimal balance;
     private String phone;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthDate;
-
-    public EmployeeDTO toEmployeeDTO() {
-        return new EmployeeDTO(name, email, null, phone, birthDate); // пароль не міняємо тут
-    }
-
-    public ClientDTO toClientDTO() {
-        return new ClientDTO(name, email, null, balance); // пароль не міняємо тут
-    }
 }
