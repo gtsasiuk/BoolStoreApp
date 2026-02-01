@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
   <title th:text="${book.name} + ' - BookStore'">Book Details</title>
@@ -21,10 +23,21 @@
     <p class="book-description"><strong>Description:</strong> <span th:text="${book.description}">Full book description goes here...</span></p>
     <p class="book-description"><strong>Characteristics:</strong> <span th:text="${book.characteristics}">Additional characteristics...</span></p>
 
-    <div class="mt-4">
+    <div class="mt-4 d-flex gap-2">
         <a href="/books" class="btn btn-secondary">← Back</a>
-        <button class="btn btn-primary">Add to Cart</button>
+
+        <div sec:authorize="hasRole('EMPLOYEE')" class="d-flex gap-2">
+            <a th:href="@{'/books/edit/' + ${book.name}}" class="btn btn-warning">Edit</a>
+            <form th:action="@{'/books/delete/' + ${book.name}}" method="post" th:onsubmit="return confirm('Delete this book?')">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+
+        <div sec:authorize="!hasRole('EMPLOYEE')" class="d-flex gap-2">
+            <a href="/orders/add" class="btn btn-primary">Add to Cart</a>
+        </div>
     </div>
+
 </div>
 
 </body>

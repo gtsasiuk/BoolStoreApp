@@ -1,12 +1,15 @@
 package com.epam.rd.autocode.spring.project.controller;
 
+import com.epam.rd.autocode.spring.project.dto.BookDTO;
+import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
+import com.epam.rd.autocode.spring.project.model.enums.Language;
 import com.epam.rd.autocode.spring.project.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/books")
@@ -26,5 +29,40 @@ public class BookController {
         return "books/details";
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/add")
+    public String addForm(Model model) {
+        model.addAttribute("book", new BookDTO());
+        return "books/add";
+    }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/add")
+    public String add(@Valid @ModelAttribute BookDTO dto) {
+        bookService.addBook(dto);
+        return "redirect:/books";
+    }
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/edit/{name}")
+    public String editForm(@PathVariable String name, Model model) {
+        model.addAttribute("book", bookService.getBookByName(name));
+        model.addAttribute("ageGroups", AgeGroup.values());
+        model.addAttribute("languages", Language.values());
+        return "books/edit";
+    }
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/edit/{name}")
+    public String edit(@PathVariable String name, BookDTO dto, Model model) {
+        model.addAttribute("book", bookService.updateBookByName(name, dto));
+        return "redirect:/books/{name}";
+    }
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/delete/{name}")
+    public String delete(@PathVariable String name) {
+        bookService.deleteBookByName(name);
+        return "redirect:/books";
+    }
 }
