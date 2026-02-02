@@ -34,7 +34,12 @@
         </div>
 
         <div sec:authorize="!hasRole('EMPLOYEE')" class="d-flex gap-2">
-            <a href="/orders/add" class="btn btn-primary">Add to Cart</a>
+            <form th:action="@{/cart/add}" method="post">
+                <input type="hidden" name="bookName" th:value="${book.name}">
+                <button type="submit" class="btn btn-primary">
+                    Add to Cart
+                </button>
+            </form>
         </div>
     </div>
 
