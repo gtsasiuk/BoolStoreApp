@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDTO {
+    private Long id;
     @NotBlank
     private String clientEmail;
     private String employeeEmail;

@@ -3,6 +3,7 @@
 <head>
   <title>Orders</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
@@ -11,25 +12,39 @@
 <div class="container my-5">
   <h2>Orders Management 🧾</h2>
 
-  <table class="table">
+  <table class="table align-middle">
     <thead>
     <tr>
+      <th>ID</th>
       <th>Client</th>
       <th>Date</th>
       <th>Status</th>
       <th>Total</th>
-      <th></th>
+      <th>Actions</th>
     </tr>
     </thead>
+
     <tbody>
     <tr th:each="order : ${orders}">
+      <td th:text="${order.id}"></td>
       <td th:text="${order.clientEmail}"></td>
-      <td th:text="${order.orderDate}"></td>
-      <td th:text="${order.status}"></td>
-      <td>$<span th:text="${order.price}"></span></td>
+      <td th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></td>
+
       <td>
-        <form th:action="@{/orders/confirm}" method="post"
-              th:if="${order.status == 'NEW'}">
+        <span class="badge bg-warning" th:if="${order.status.name() == 'NEW'}">NEW</span>
+        <span class="badge bg-success" th:if="${order.status.name() == 'CONFIRMED'}">CONFIRMED</span>
+      </td>
+
+      <td>$<span th:text="${order.price}"></span></td>
+
+      <td class="d-flex gap-2">
+        <a th:href="@{/orders/{id}(id=${order.id})}"
+           class="btn btn-outline-primary btn-sm">
+          View
+        </a>
+
+        <form th:if="${order.status.name() == 'NEW'}"
+              th:action="@{/orders/confirm/{id}(id=${order.id})}" method="post">
           <input type="hidden" name="orderId" th:value="${order.id}">
           <button class="btn btn-success btn-sm">Confirm</button>
         </form>

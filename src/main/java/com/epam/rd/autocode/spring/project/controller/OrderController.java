@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -32,5 +34,20 @@ public class OrderController {
     public String myOrdersPage(Model model, Authentication auth) {
         model.addAttribute("orders", orderService.getOrdersByClient(auth.getName()));
         return "orders/my_orders";
+    }
+
+    @PreAuthorize("hasAnyRole('CUSTOMER','EMPLOYEE')")
+    @GetMapping("/{id}")
+    public String orderDetails(@PathVariable Long id, Model model) {
+        model.addAttribute("order", orderService.getOrderById(id));
+        return "orders/order_details";
+    }
+
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/confirm/{id}")
+    public String orderConfirm(@PathVariable Long id, Model model, Authentication auth) {
+        orderService.confirmOrder(id, auth.getName());
+        return "redirect:/orders";
     }
 }

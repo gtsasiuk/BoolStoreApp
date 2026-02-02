@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -26,6 +27,18 @@ public class ClientServiceImpl implements ClientService {
         Client newClient = mapper.map(client, Client.class);
         Client savedClient = repository.save(newClient);
         return mapper.map(savedClient, ClientDTO.class);
+    }
+
+    @Override
+    public void decreaseBalance(String email, BigDecimal amount) {
+        Client client = repository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Client not found"));
+
+        if (client.getBalance().compareTo(amount) < 0) {
+            throw new RuntimeException("Not enough balance");
+        }
+
+        client.setBalance(client.getBalance().subtract(amount));
     }
 
     @Override

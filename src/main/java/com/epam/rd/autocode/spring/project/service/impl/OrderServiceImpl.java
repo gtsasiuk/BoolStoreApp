@@ -8,6 +8,7 @@ import com.epam.rd.autocode.spring.project.repo.BookRepository;
 import com.epam.rd.autocode.spring.project.repo.ClientRepository;
 import com.epam.rd.autocode.spring.project.repo.EmployeeRepository;
 import com.epam.rd.autocode.spring.project.repo.OrderRepository;
+import com.epam.rd.autocode.spring.project.service.ClientService;
 import com.epam.rd.autocode.spring.project.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,10 +25,12 @@ public class OrderServiceImpl implements OrderService {
     private ClientRepository clientRepository;
     private EmployeeRepository employeeRepository;
     private BookRepository bookRepository;
+    private ClientService clientService;
 
     private OrderDTO toDto(Order order) {
         OrderDTO dto = new OrderDTO();
 
+        dto.setId(order.getId());
         dto.setClientEmail(order.getClient().getEmail());
         if (order.getEmployee() != null) {
             dto.setEmployeeEmail(order.getEmployee().getEmail());
@@ -36,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
         }
         dto.setOrderDate(order.getOrderDate());
         dto.setPrice(order.getPrice());
+        dto.setStatus(order.getOrderStatus());
 
         List<BookItemDTO> items = order.getBookItems().stream()
                 .map(item -> new BookItemDTO(
@@ -100,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
         return toDto(savedOrder);
     }
 
+    @Override
     @Transactional
     public void confirmOrder(Long orderId, String employeeEmail) {
         Order order = orderRepository.findById(orderId)
@@ -111,6 +116,8 @@ public class OrderServiceImpl implements OrderService {
 
         order.setEmployee(employee);
         order.setOrderStatus(OrderStatus.CONFIRMED);
+
+        clientService.decreaseBalance(order.getClient().getEmail(), order.getPrice());
     }
 
     @Override
@@ -138,5 +145,13 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public OrderDTO getOrderById(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        return toDto(order);
     }
 }
