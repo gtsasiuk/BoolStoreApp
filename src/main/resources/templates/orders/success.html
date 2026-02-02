@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order placed</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container my-5 text-center">
+    <div class="card p-5">
+        <h2 class="mb-3">✅ Order successfully placed!</h2>
+
+        <p class="mb-4">
+            Thank you for your purchase.
+            Our employee will confirm your order shortly.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/books" class="btn btn-primary">
+                Continue shopping
+            </a>
+
+            <a href="/orders/my" class="btn btn-outline-secondary">
+                View my orders
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
