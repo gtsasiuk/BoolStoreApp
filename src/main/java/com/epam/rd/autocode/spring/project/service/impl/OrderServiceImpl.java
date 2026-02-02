@@ -121,6 +121,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    public void cancelOrder(Long orderId, String clientEmail) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getClient().getEmail().equals(clientEmail)) {
+            throw new RuntimeException("You cannot cancel someone else's order");
+        }
+
+        if (order.getOrderStatus() != OrderStatus.NEW) {
+            throw new RuntimeException("Only NEW orders can be cancelled");
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELLED);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<OrderDTO> getOrdersByClient(String clientEmail) {
         return orderRepository.findAllByClient_Email(clientEmail)

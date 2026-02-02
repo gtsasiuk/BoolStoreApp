@@ -17,4 +17,6 @@ public interface OrderService {
     OrderDTO getOrderById(Long id);
 
     void confirmOrder(Long orderId, String employeeEmail);
+
+    void cancelOrder(Long orderId, String clientEmail);
 }

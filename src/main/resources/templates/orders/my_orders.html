@@ -36,15 +36,23 @@
       <td>
         <span class="badge bg-warning" th:if="${order.status.name() == 'NEW'}">NEW</span>
         <span class="badge bg-success" th:if="${order.status.name() == 'CONFIRMED'}">CONFIRMED</span>
+        <span class="badge bg-danger" th:if="${order.status.name() == 'CANCELLED'}">CANCELLED</span>
       </td>
 
       <td>$<span th:text="${order.price}"></span></td>
 
-      <td>
+      <td class="d-flex gap-2">
         <a th:href="@{/orders/{id}(id=${order.id})}"
            class="btn btn-outline-primary btn-sm">
           View
         </a>
+        <form th:if="${order.status.name() == 'NEW'}"
+              th:action="@{/orders/cancel/{id}(id=${order.id})}"
+              method="post">
+          <button class="btn btn-outline-danger btn-sm">
+            Cancel
+          </button>
+        </form>
       </td>
     </tr>
     </tbody>

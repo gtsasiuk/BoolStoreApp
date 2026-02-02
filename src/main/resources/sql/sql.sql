@@ -1,5 +1,5 @@
 INSERT INTO USERS (ID, EMAIL, NAME, PASSWORD) VALUES
-(NEXT VALUE FOR USER_SEQ, 'john.doe@email.com', 'John Doe', 'pass123'),
+(NEXT VALUE FOR USER_SEQ, 'john.doe@email.com', 'John Doe', '$2a$12$Zdu304zVW2xz.QxODEYmF.iQd2CD.OPGqJrbt2I1s3M4mKcuIAqZG'),
 (NEXT VALUE FOR USER_SEQ, 'jane.smith@email.com', 'Jane Smith', 'abc456'),
 (NEXT VALUE FOR USER_SEQ, 'bob.jones@email.com', 'Bob Jones', 'qwerty789'),
 (NEXT VALUE FOR USER_SEQ, 'alice.white@email.com', 'Alice White', 'secret567'),
@@ -10,7 +10,7 @@ INSERT INTO USERS (ID, EMAIL, NAME, PASSWORD) VALUES
 (NEXT VALUE FOR USER_SEQ, 'david.wright@email.com', 'David Wright', 'access123'),
 (NEXT VALUE FOR USER_SEQ,'emily.harris@email.com', 'Emily Harris', '1234abcd'),
 
-(NEXT VALUE FOR USER_SEQ,'client1@example.com', 'Medelyn Wright', 'password123'),
+(NEXT VALUE FOR USER_SEQ,'eugene@gmail.com', 'Eugene Tsasiuk', '$2a$12$feLJU3wYmiAG5CdG0tWGE.DHvT7i74fj.VykuMV05Qhw4aHHIZk52'),
 (NEXT VALUE FOR USER_SEQ,'client2@example.com', 'Landon Phillips', 'securepass'),
 (NEXT VALUE FOR USER_SEQ,'client3@example.com', 'Harmony Mason', 'abc123'),
 (NEXT VALUE FOR USER_SEQ,'client4@example.com', 'Archer Harper', 'pass456'),

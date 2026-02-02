@@ -46,8 +46,15 @@ public class OrderController {
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/confirm/{id}")
-    public String orderConfirm(@PathVariable Long id, Model model, Authentication auth) {
+    public String orderConfirm(@PathVariable Long id, Authentication auth) {
         orderService.confirmOrder(id, auth.getName());
         return "redirect:/orders";
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping("/cancel/{id}")
+    public String orderCancel(@PathVariable Long id, Authentication auth) {
+        orderService.cancelOrder(id, auth.getName());
+        return "redirect:/orders/my";
     }
 }

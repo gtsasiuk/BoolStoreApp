@@ -33,6 +33,7 @@
       <td>
         <span class="badge bg-warning" th:if="${order.status.name() == 'NEW'}">NEW</span>
         <span class="badge bg-success" th:if="${order.status.name() == 'CONFIRMED'}">CONFIRMED</span>
+        <span class="badge bg-danger" th:if="${order.status.name() == 'CANCELLED'}">CANCELLED</span>
       </td>
 
       <td>$<span th:text="${order.price}"></span></td>
