@@ -1,5 +1,6 @@
 package com.epam.rd.autocode.spring.project.dto;
 
+import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,13 +21,12 @@ import java.util.List;
 public class OrderDTO {
     @NotBlank
     private String clientEmail;
-    @NotBlank
     private String employeeEmail;
     @NotNull
     private LocalDateTime orderDate;
-    @NotNull
-    @Positive
     private BigDecimal price;
+    @NotNull
+    private OrderStatus status;
     @Valid
     @NotNull
     private List<BookItemDTO> bookItems;

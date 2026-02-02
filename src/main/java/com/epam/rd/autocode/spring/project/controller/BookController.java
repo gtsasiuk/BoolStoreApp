@@ -20,20 +20,20 @@ public class BookController {
     @GetMapping
     public String booksPage(Model model) {
         model.addAttribute("books", bookService.getAllBooks());
-        return "book_list";
+        return "books/book_list";
     }
 
     @GetMapping("/{name}")
     public String book(@PathVariable String name, Model model) {
         model.addAttribute("book", bookService.getBookByName(name));
-        return "book_details";
+        return "books/book_details";
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("book", new BookDTO());
-        return "book_add";
+        return "books/book_add";
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -49,7 +49,7 @@ public class BookController {
         model.addAttribute("book", bookService.getBookByName(name));
         model.addAttribute("ageGroups", AgeGroup.values());
         model.addAttribute("languages", Language.values());
-        return "book_edit";
+        return "books/book_edit";
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")

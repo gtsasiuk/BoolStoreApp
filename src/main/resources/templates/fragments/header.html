@@ -8,6 +8,13 @@
                 <a href="/">Home</a>
                 <a href="/books">Books</a>
             </span>
+            <span sec:authorize="hasRole('CUSTOMER')">
+                <a href="/cart">My cart</a>
+                <a href="/orders/my">My orders</a>
+            </span>
+            <span sec:authorize="hasRole('EMPLOYEE')">
+                <a href="/orders">Orders</a>
+            </span>
             <span sec:authorize="isAuthenticated()">
                 <a href="/profile">Profile</a>
 

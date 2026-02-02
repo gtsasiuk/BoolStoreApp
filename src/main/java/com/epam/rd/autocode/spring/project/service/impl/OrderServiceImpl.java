@@ -3,6 +3,7 @@ package com.epam.rd.autocode.spring.project.service.impl;
 import com.epam.rd.autocode.spring.project.dto.BookItemDTO;
 import com.epam.rd.autocode.spring.project.dto.OrderDTO;
 import com.epam.rd.autocode.spring.project.model.*;
+import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import com.epam.rd.autocode.spring.project.repo.BookRepository;
 import com.epam.rd.autocode.spring.project.repo.ClientRepository;
 import com.epam.rd.autocode.spring.project.repo.EmployeeRepository;
@@ -13,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -27,7 +29,11 @@ public class OrderServiceImpl implements OrderService {
         OrderDTO dto = new OrderDTO();
 
         dto.setClientEmail(order.getClient().getEmail());
-        dto.setEmployeeEmail(order.getEmployee().getEmail());
+        if (order.getEmployee() != null) {
+            dto.setEmployeeEmail(order.getEmployee().getEmail());
+        } else {
+            dto.setEmployeeEmail(null);
+        }
         dto.setOrderDate(order.getOrderDate());
         dto.setPrice(order.getPrice());
 
@@ -48,14 +54,28 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO addOrder(OrderDTO order) {
         Client client = clientRepository.findByEmail(order.getClientEmail())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
-        Employee employee = employeeRepository.findByEmail(order.getEmployeeEmail())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        Employee employee = null;
+        if (order.getEmployeeEmail() != null) {
+            employee = employeeRepository.findByEmail(order.getEmployeeEmail())
+                    .orElseThrow(() -> new RuntimeException("Employee not found"));
+        }
 
         Order newOrder = new Order();
         newOrder.setClient(client);
         newOrder.setEmployee(employee);
-        newOrder.setPrice(order.getPrice());
         newOrder.setOrderDate(order.getOrderDate());
+
+        BigDecimal total = order.getBookItems().stream()
+                .map(itemDTO -> {
+                    Book book = bookRepository.findByName(itemDTO.getBookName())
+                            .orElseThrow(() -> new RuntimeException("Book not found"));
+
+                    return book.getPrice()
+                            .multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
         List<BookItem> items = order.getBookItems().stream()
                 .map(itemDTO -> {
                     Book book = bookRepository.findByName(itemDTO.getBookName())
@@ -70,11 +90,27 @@ public class OrderServiceImpl implements OrderService {
                     return item;
                 })
                 .toList();
+
+        newOrder.setPrice(total);
         newOrder.setBookItems(items);
+        newOrder.setOrderStatus(OrderStatus.NEW);
 
         Order savedOrder = orderRepository.save(newOrder);
 
         return toDto(savedOrder);
+    }
+
+    @Transactional
+    public void confirmOrder(Long orderId, String employeeEmail) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow();
+
+        Employee employee = employeeRepository
+                .findByEmail(employeeEmail)
+                .orElseThrow();
+
+        order.setEmployee(employee);
+        order.setOrderStatus(OrderStatus.CONFIRMED);
     }
 
     @Override
@@ -95,4 +131,12 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public List<OrderDTO> getAllOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
 }

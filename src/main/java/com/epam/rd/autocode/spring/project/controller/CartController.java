@@ -3,6 +3,7 @@ package com.epam.rd.autocode.spring.project.controller;
 import com.epam.rd.autocode.spring.project.dto.BookDTO;
 import com.epam.rd.autocode.spring.project.dto.CartDTO;
 import com.epam.rd.autocode.spring.project.dto.OrderDTO;
+import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import com.epam.rd.autocode.spring.project.service.BookService;
 import com.epam.rd.autocode.spring.project.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/checkout")
     public String checkout(@ModelAttribute("cart") CartDTO cart,
                            Authentication auth,
@@ -78,6 +79,7 @@ public class CartController {
         order.setOrderDate(LocalDateTime.now());
         order.setPrice(null);
         order.setBookItems(cart.getItems());
+        order.setStatus(OrderStatus.NEW);
 
         orderService.addOrder(order);
 
