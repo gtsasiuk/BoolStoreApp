@@ -6,59 +6,45 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container my-5">
   <h2>My Orders 📦</h2>
 
-  <div th:if="${#lists.isEmpty(orders)}">
+  <div th:if="${#lists.isEmpty(orders)}" class="text-center my-4">
     <p>You have no orders yet.</p>
     <a href="/books" class="btn btn-primary">Browse books</a>
   </div>
 
-  <table class="table align-middle">
+  <table class="table table-hover align-middle" th:if="${!#lists.isEmpty(orders)}">
     <thead>
     <tr>
       <th>ID</th>
       <th>Date</th>
       <th>Status</th>
       <th>Total</th>
-      <th></th>
+      <th>Actions</th>
     </tr>
     </thead>
-
     <tbody>
     <tr th:each="order : ${orders}">
       <td th:text="${order.id}"></td>
       <td th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></td>
-
       <td>
         <span class="badge bg-warning" th:if="${order.status.name() == 'NEW'}">NEW</span>
         <span class="badge bg-success" th:if="${order.status.name() == 'CONFIRMED'}">CONFIRMED</span>
         <span class="badge bg-danger" th:if="${order.status.name() == 'CANCELLED'}">CANCELLED</span>
       </td>
-
       <td>$<span th:text="${order.price}"></span></td>
-
       <td class="d-flex gap-2">
-        <a th:href="@{/orders/{id}(id=${order.id})}"
-           class="btn btn-outline-primary btn-sm">
-          View
-        </a>
-        <form th:if="${order.status.name() == 'NEW'}"
-              th:action="@{/orders/cancel/{id}(id=${order.id})}"
-              method="post">
-          <button class="btn btn-outline-danger btn-sm">
-            Cancel
-          </button>
+        <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-outline-primary btn-sm flex-grow-1">View</a>
+        <form th:if="${order.status.name() == 'NEW'}" th:action="@{/orders/cancel/{id}(id=${order.id})}" method="post" class="flex-grow-1">
+          <button class="btn btn-outline-danger btn-sm w-100">Cancel</button>
         </form>
       </td>
     </tr>
     </tbody>
   </table>
-
 </div>
-
 </body>
 </html>

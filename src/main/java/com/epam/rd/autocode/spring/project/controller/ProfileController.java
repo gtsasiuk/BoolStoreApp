@@ -66,4 +66,11 @@ public class ProfileController {
 
         return "redirect:/profile";
     }
+
+    @PostMapping("/delete")
+    public String deleteProfile(Authentication auth) {
+        clientService.deleteClientByEmail(auth.getName());
+        SecurityContextHolder.clearContext();
+        return "redirect:/logout";
+    }
 }
