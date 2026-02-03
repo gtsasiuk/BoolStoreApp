@@ -39,6 +39,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String email = jwtUtil.extractEmail(token);
                 var userDetails = userDetailsService.loadUserByUsername(email);
 
+                if (!userDetails.isEnabled()) {
+                    clearJwtCookie(response);
+                    SecurityContextHolder.clearContext();
+                    response.sendRedirect("/auth/login");
+                    return;
+                }
+
                 var auth = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

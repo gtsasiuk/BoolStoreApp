@@ -15,12 +15,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return clientRepository.findByEmail(email)
-                .<UserDetails>map(CustomUserDetails::new)
-                .or(() -> employeeRepository.findByEmail(email)
-                        .map(CustomUserDetails::new))
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found: " + email));
+    public UserDetails loadUserByUsername(String email) {
+
+        var clientOpt = clientRepository.findByEmail(email);
+        if (clientOpt.isPresent()) {
+            var client = clientOpt.get();
+            return new CustomUserDetails(client, client.getBlocked());
+        }
+
+        var employeeOpt = employeeRepository.findByEmail(email);
+        if (employeeOpt.isPresent()) {
+            var employee = employeeOpt.get();
+            return new CustomUserDetails(employee, employee.getBlocked());
+        }
+
+        throw new UsernameNotFoundException("User not found: " + email);
     }
+
 }

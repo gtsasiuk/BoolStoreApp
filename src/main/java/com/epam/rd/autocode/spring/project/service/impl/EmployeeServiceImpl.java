@@ -47,14 +47,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO getEmployeeByEmail(String email) {
         Employee employee = repository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
         return mapper.map(employee, EmployeeDTO.class);
     }
 
     @Override
     public EmployeeDTO updateEmployeeByEmail(String email, EmployeeDTO employee) {
         Employee existingEmployee = repository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
 
         if (employee.getPassword() != null && !employee.getPassword().isBlank()) {
             existingEmployee.setPassword(employee.getPassword());
@@ -71,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployeeByEmail(String email) {
         Employee employee = repository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
         repository.delete(employee);
     }
 

@@ -11,9 +11,11 @@ import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
     private final User user;
+    private final Boolean blocked;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user, Boolean blocked) {
         this.user = user;
+        this.blocked = blocked;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !blocked;
     }
 
     @Override
@@ -51,6 +53,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !blocked;
     }
 }

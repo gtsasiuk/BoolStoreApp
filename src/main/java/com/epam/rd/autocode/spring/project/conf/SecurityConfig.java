@@ -31,8 +31,24 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/login", "/auth/register", "/books", "/books/**", "/cart/**", "/css/**", "/h2-console", "/h2-console/**").permitAll()
-                        .requestMatchers("/profile").hasAnyRole("EMPLOYEE", "CUSTOMER")
+                        .requestMatchers(
+                                "/",
+                                "/auth/login",
+                                "/auth/register",
+                                "/books/**",
+                                "/css/**",
+                                "/h2-console/**"
+                        ).permitAll()
+                        .requestMatchers("/profile/**").hasAnyRole("EMPLOYEE", "CUSTOMER")
+                        .requestMatchers("/cart/**", "/orders/my/**").hasRole("CUSTOMER")
+                        .requestMatchers(
+                                "/orders/**",
+                                "/clients/**",
+                                "/employees/**",
+                                "/books/add/**",
+                                "/books/edit/**",
+                                "/books/delete/**"
+                        ).hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
