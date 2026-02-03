@@ -24,4 +24,5 @@ public class ClientDTO {
     @NotNull
     @PositiveOrZero
     private BigDecimal balance;
+    private Boolean blocked;
 }

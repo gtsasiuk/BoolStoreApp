@@ -24,4 +24,5 @@ public class EmployeeDTO {
     private String phone;
     @NotNull
     private LocalDate birthDate;
+    private Boolean blocked;
 }

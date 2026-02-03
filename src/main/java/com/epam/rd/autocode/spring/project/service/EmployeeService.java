@@ -15,4 +15,6 @@ public interface EmployeeService {
     void deleteEmployeeByEmail(String email);
 
     EmployeeDTO addEmployee(EmployeeDTO employee);
+
+    void toggleBlockByEmail(String email);
 }

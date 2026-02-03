@@ -27,4 +27,7 @@ public class User {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "blocked", nullable = false)
+    private Boolean blocked;
 }

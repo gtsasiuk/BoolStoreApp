@@ -18,4 +18,6 @@ public interface ClientService {
     ClientDTO addClient(ClientDTO client);
 
     void decreaseBalance(String email, BigDecimal amount);
+
+    void toggleBlockByEmail(String email);
 }

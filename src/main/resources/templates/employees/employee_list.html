@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Clients</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container my-5">
+  <div class="card">
+    <h2 class="mb-4">Employees List</h2>
+
+    <table class="table table-hover align-middle">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Birth Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="employee : ${employees}">
+        <td th:text="${employee.name}"></td>
+        <td th:text="${employee.email}"></td>
+        <td><span th:text="${employee.phone}"></span></td>
+        <td><span th:text="${employee.birthDate}"></span></td>
+
+        <td>
+          <span th:if="${employee.blocked}" class="badge bg-danger">Blocked</span>
+          <span th:if="${!employee.blocked}" class="badge bg-success">Active</span>
+        </td>
+
+        <td>
+          <form th:action="@{/employees/toggle-block}"
+                method="post"
+                class="d-inline">
+
+            <input type="hidden" name="email" th:value="${employee.email}"/>
+
+            <button type="submit"
+                    th:classappend="${employee.blocked} ? 'btn-success' : 'btn-danger'"
+                    class="btn btn-sm">
+
+              <span th:text="${employee.blocked} ? 'Unblock' : 'Block'"></span>
+            </button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

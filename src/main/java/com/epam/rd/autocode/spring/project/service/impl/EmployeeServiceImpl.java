@@ -3,6 +3,7 @@ package com.epam.rd.autocode.spring.project.service.impl;
 import com.epam.rd.autocode.spring.project.dto.EmployeeDTO;
 import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
 import com.epam.rd.autocode.spring.project.exception.NotFoundException;
+import com.epam.rd.autocode.spring.project.model.Client;
 import com.epam.rd.autocode.spring.project.model.Employee;
 import com.epam.rd.autocode.spring.project.repo.EmployeeRepository;
 import com.epam.rd.autocode.spring.project.service.EmployeeService;
@@ -26,6 +27,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee newEmployee = mapper.map(employee, Employee.class);
         Employee savedEmployee = repository.save(newEmployee);
         return mapper.map(savedEmployee, EmployeeDTO.class);
+    }
+
+    @Override
+    public void toggleBlockByEmail(String email) {
+        Employee employee = repository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
+
+        employee.setBlocked(!employee.getBlocked());
+        repository.save(employee);
     }
 
     @Override

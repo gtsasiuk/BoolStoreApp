@@ -42,6 +42,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public void toggleBlockByEmail(String email) {
+        Client client = repository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Client not found"));
+
+        client.setBlocked(!client.getBlocked());
+        repository.save(client);
+    }
+
+    @Override
     public List<ClientDTO> getAllClients() {
         return repository.findAll()
                 .stream().map(client -> mapper.map(client, ClientDTO.class)).toList();

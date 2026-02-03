@@ -15,8 +15,8 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class Client extends User {
-    public Client(Long id, String email, String password, String name, BigDecimal balance) {
-        super(id, email, password, name);
+    public Client(Long id, String email, String password, String name, BigDecimal balance, Boolean blocked) {
+        super(id, email, password, name, blocked);
         this.balance = balance;
     }
 

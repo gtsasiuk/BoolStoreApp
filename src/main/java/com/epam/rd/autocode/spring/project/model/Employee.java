@@ -15,8 +15,8 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class Employee extends User {
-    public Employee(Long id, String email, String password, String name, String phone, LocalDate birthDate) {
-        super(id, email, password, name);
+    public Employee(Long id, String email, String password, String name, String phone, LocalDate birthDate, Boolean blocked) {
+        super(id, email, password, name, blocked);
         this.phone = phone;
         this.birthDate = birthDate;
     }

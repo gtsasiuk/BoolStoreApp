@@ -36,11 +36,11 @@ public class ProfileController {
 
         if (hasRole(authentication,"ROLE_EMPLOYEE")) {
             var e = employeeService.getEmployeeByEmail(email);
-            profile = new UserProfileViewDTO(e.getName(), e.getEmail(), null, e.getPhone(), e.getBirthDate());
+            profile = new UserProfileViewDTO(e.getName(), e.getEmail(), null, e.getPhone(), e.getBirthDate(), e.getBlocked());
             update = new UserProfileUpdateDTO(e.getName(), null, e.getPhone(), e.getBirthDate());
         } else {
             var c = clientService.getClientByEmail(email);
-            profile = new UserProfileViewDTO(c.getName(), c.getEmail(), c.getBalance(), null, null);
+            profile = new UserProfileViewDTO(c.getName(), c.getEmail(), c.getBalance(), null, null, c.getBlocked());
             update = new UserProfileUpdateDTO(c.getName(), c.getBalance(), null, null);
         }
 

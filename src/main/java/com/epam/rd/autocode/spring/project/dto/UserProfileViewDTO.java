@@ -25,4 +25,5 @@ public class UserProfileViewDTO {
     private String phone;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthDate;
+    private Boolean blocked;
 }

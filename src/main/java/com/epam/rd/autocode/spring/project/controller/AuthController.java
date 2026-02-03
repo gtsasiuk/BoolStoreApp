@@ -63,6 +63,7 @@ public class AuthController {
         client.setName(dto.getName());
         client.setPassword(passwordEncoder.encode(dto.getPassword()));
         client.setBalance(BigDecimal.ZERO);
+        client.setBlocked(false);
 
         clientService.addClient(client);
 

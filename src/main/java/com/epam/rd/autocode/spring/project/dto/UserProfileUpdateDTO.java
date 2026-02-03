@@ -23,10 +23,10 @@ public class UserProfileUpdateDTO {
     private LocalDate birthDate;
 
     public EmployeeDTO toEmployeeDTO() {
-        return new EmployeeDTO(null, null, name, phone, birthDate);
+        return new EmployeeDTO(null, null, name, phone, birthDate, null);
     }
 
     public ClientDTO toClientDTO() {
-        return new ClientDTO(null, null, name, balance);
+        return new ClientDTO(null, null, name, balance, null);
     }
 }
