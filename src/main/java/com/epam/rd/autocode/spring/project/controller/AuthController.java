@@ -5,6 +5,7 @@ import com.epam.rd.autocode.spring.project.dto.auth.LoginRequestDTO;
 import com.epam.rd.autocode.spring.project.dto.auth.RegisterRequestDTO;
 import com.epam.rd.autocode.spring.project.security.CustomUserDetails;
 import com.epam.rd.autocode.spring.project.security.jwt.JwtUtil;
+import com.epam.rd.autocode.spring.project.service.AuthService;
 import com.epam.rd.autocode.spring.project.service.ClientService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,8 +27,7 @@ import java.math.BigDecimal;
 public class AuthController {
     private final ClientService clientService;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
     private void addJwtCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie("JWT", token);
@@ -35,23 +35,6 @@ public class AuthController {
         cookie.setPath("/");
         cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
-    }
-
-    private void authenticate(String email, String password, HttpServletResponse response) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        String role = userDetails.getAuthorities()
-                .iterator()
-                .next()
-                .getAuthority();
-
-        String token = jwtUtil.generateToken(userDetails.getUsername(), role);
-
-        addJwtCookie(response, token);
     }
 
     @GetMapping("/login")
@@ -67,7 +50,8 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute LoginRequestDTO dto,
                         HttpServletResponse response) {
-        authenticate(dto.getEmail(), dto.getPassword(), response);
+        String token = authService.authenticate(dto.getEmail(), dto.getPassword());
+        addJwtCookie(response, token);
         return "redirect:/";
     }
 
@@ -82,7 +66,8 @@ public class AuthController {
 
         clientService.addClient(client);
 
-        authenticate(dto.getEmail(), dto.getPassword(), response);
+        String token = authService.authenticate(dto.getEmail(), dto.getPassword());
+        addJwtCookie(response, token);
 
         return "redirect:/";
     }

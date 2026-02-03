@@ -22,14 +22,10 @@ public class ProfileController {
     private final ClientService clientService;
     private final EmployeeService employeeService;
 
-    private boolean hasRole(String role) {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getAuthorities()
-                .stream()
+    private boolean hasRole(Authentication auth, String role) {
+        return auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals(role));
     }
-
 
     @GetMapping
     public String profilePage(Model model, Authentication authentication,
@@ -38,7 +34,7 @@ public class ProfileController {
         UserProfileViewDTO profile;
         UserProfileUpdateDTO update;
 
-        if (hasRole("ROLE_EMPLOYEE")) {
+        if (hasRole(authentication,"ROLE_EMPLOYEE")) {
             var e = employeeService.getEmployeeByEmail(email);
             profile = new UserProfileViewDTO(e.getName(), e.getEmail(), null, e.getPhone(), e.getBirthDate());
             update = new UserProfileUpdateDTO(e.getName(), null, e.getPhone(), e.getBirthDate());
@@ -58,7 +54,7 @@ public class ProfileController {
     public String updateProfile(UserProfileUpdateDTO form, Authentication authentication) {
         String email = authentication.getName();
 
-        if (hasRole("ROLE_EMPLOYEE")) {
+        if (hasRole(authentication,"ROLE_EMPLOYEE")) {
             employeeService.updateEmployeeByEmail(email, form.toEmployeeDTO());
         } else {
             clientService.updateClientByEmail(email, form.toClientDTO());
