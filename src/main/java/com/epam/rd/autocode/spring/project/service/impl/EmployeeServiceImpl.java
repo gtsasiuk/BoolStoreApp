@@ -25,6 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new AlreadyExistException("Employee already exists");
         }
         Employee newEmployee = mapper.map(employee, Employee.class);
+        newEmployee.setBlocked(false);
         Employee savedEmployee = repository.save(newEmployee);
         return mapper.map(savedEmployee, EmployeeDTO.class);
     }

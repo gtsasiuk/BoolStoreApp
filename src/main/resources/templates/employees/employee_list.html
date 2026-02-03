@@ -15,6 +15,10 @@
   <div class="card">
     <h2 class="mb-4">Employees List</h2>
 
+    <a th:href="@{/employees/new}" class="btn btn-primary mb-3">
+      + Add employee
+    </a>
+
     <table class="table table-hover align-middle">
       <thead>
       <tr>
@@ -51,6 +55,17 @@
                     class="btn btn-sm">
 
               <span th:text="${employee.blocked} ? 'Unblock' : 'Block'"></span>
+            </button>
+          </form>
+          <form th:action="@{/employees/delete}"
+                method="post"
+                class="d-inline"
+                onsubmit="return confirm('Are you sure?')">
+
+            <input type="hidden" name="email" th:value="${employee.email}"/>
+
+            <button class="btn btn-sm btn-outline-danger">
+              Delete
             </button>
           </form>
         </td>

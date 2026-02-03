@@ -33,13 +33,17 @@
             </form>
         </div>
 
-        <div sec:authorize="!hasRole('EMPLOYEE')" class="d-flex gap-2">
+        <div sec:authorize="hasRole('CUSTOMER')" class="d-flex gap-2">
             <form th:action="@{/cart/add}" method="post">
                 <input type="hidden" name="bookName" th:value="${book.name}">
                 <button type="submit" class="btn btn-primary">
                     Add to Cart
                 </button>
             </form>
+        </div>
+
+        <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
+            <a href="/auth/login" type="submit" class="btn btn-primary">Add to Cart</a>
         </div>
     </div>
 
