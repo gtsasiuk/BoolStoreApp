@@ -27,14 +27,15 @@
         <a href="/books" class="btn btn-secondary">← Back</a>
 
         <div sec:authorize="hasRole('EMPLOYEE')" class="d-flex gap-2">
-            <a th:href="@{'/books/edit/' + ${book.name}}" class="btn btn-warning">Edit</a>
+            <a th:href="@{'/books/edit/' + ${book.name}}" class="btn btn-edit">Edit</a>
             <form th:action="@{'/books/toggle-active/' + ${book.name}}" method="post">
                 <button type="submit"
-                        th:class="${book.active} ? 'btn btn-warning' : 'btn btn-success'">
+                        th:class="${book.active} ? 'btn btn-deactivate' : 'btn btn-activate'">
                     <span th:text="${book.active} ? 'Deactivate' : 'Activate'"></span>
                 </button>
             </form>
         </div>
+
 
         <div sec:authorize="hasRole('CUSTOMER')" class="d-flex gap-2">
             <form th:action="@{/cart/add}" method="post">
