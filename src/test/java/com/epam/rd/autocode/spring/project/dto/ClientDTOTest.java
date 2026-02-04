@@ -82,7 +82,7 @@ public class ClientDTOTest {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No parameter with type " + Constants.BIG_DECIMAL_TYPE));
 
-        assertEquals(4, parameters.size());
+        assertEquals(5, parameters.size());
     }
 
     @Test

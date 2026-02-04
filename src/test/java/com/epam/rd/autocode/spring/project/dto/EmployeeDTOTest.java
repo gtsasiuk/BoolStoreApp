@@ -82,7 +82,7 @@ public class EmployeeDTOTest {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No parameter with type " + Constants.LOCAL_DATE_TYPE));
 
-        assertEquals(5, parameters.size());
+        assertEquals(6, parameters.size());
     }
 
     @Test
