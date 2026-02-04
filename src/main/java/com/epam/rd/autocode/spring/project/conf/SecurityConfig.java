@@ -39,10 +39,9 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/h2-console/**"
                         ).permitAll()
-                        .requestMatchers("/profile/**").hasAnyRole("EMPLOYEE", "CUSTOMER")
-                        .requestMatchers("/cart/**", "/orders/my/**").hasRole("CUSTOMER")
+                        .requestMatchers("/profile/**", "/profile/delete/**", "/orders/**").hasAnyRole("EMPLOYEE", "CUSTOMER")
+                        .requestMatchers("/cart/**", "/orders/my/**", "/orders/success/**").hasRole("CUSTOMER")
                         .requestMatchers(
-                                "/orders/**",
                                 "/clients/**",
                                 "/employees/**",
                                 "/books/add/**",

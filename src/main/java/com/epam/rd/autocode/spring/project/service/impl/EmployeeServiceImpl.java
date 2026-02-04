@@ -73,7 +73,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployeeByEmail(String email) {
         Employee employee = repository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
-        repository.delete(employee);
+
+        employee.setBlocked(true);
+        repository.save(employee);
     }
 
 }

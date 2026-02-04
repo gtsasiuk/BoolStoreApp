@@ -83,6 +83,8 @@ public class ClientServiceImpl implements ClientService {
     public void deleteClientByEmail(String email) {
         Client client = repository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Client not found"));
-        repository.delete(client);
+
+        client.setBlocked(true);
+        repository.save(client);
     }
 }

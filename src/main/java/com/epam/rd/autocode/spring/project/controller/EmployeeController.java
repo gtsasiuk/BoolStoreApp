@@ -5,6 +5,7 @@ import com.epam.rd.autocode.spring.project.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,10 @@ public class EmployeeController {
 
     @PostMapping("/toggle-block")
     public String blockClient(@RequestParam String email) {
+        if (email.equals(SecurityContextHolder.getContext()
+                .getAuthentication().getName())) {
+            throw new IllegalStateException("You cannot block yourself");
+        }
         employeeService.toggleBlockByEmail(email);
         return "redirect:/employees";
     }
@@ -37,12 +42,6 @@ public class EmployeeController {
     @PostMapping("/new")
     public String createEmployeeAccount(@Valid @ModelAttribute EmployeeDTO employee) {
         employeeService.addEmployee(employee);
-        return "redirect:/employees";
-    }
-
-    @PostMapping("/delete")
-    public String createEmployeeAccount(@RequestParam String email) {
-        employeeService.deleteEmployeeByEmail(email);
         return "redirect:/employees";
     }
 }
