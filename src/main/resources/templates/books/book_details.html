@@ -28,8 +28,11 @@
 
         <div sec:authorize="hasRole('EMPLOYEE')" class="d-flex gap-2">
             <a th:href="@{'/books/edit/' + ${book.name}}" class="btn btn-warning">Edit</a>
-            <form th:action="@{'/books/delete/' + ${book.name}}" method="post" th:onsubmit="return confirm('Delete this book?')">
-                <button type="submit" class="btn btn-danger">Delete</button>
+            <form th:action="@{'/books/toggle-active/' + ${book.name}}" method="post">
+                <button type="submit"
+                        th:class="${book.active} ? 'btn btn-warning' : 'btn btn-success'">
+                    <span th:text="${book.active} ? 'Deactivate' : 'Activate'"></span>
+                </button>
             </form>
         </div>
 

@@ -53,4 +53,7 @@ public class Book {
     @Column(name = "language", nullable = false)
     @Enumerated(EnumType.STRING)
     private Language language;
+
+    @Column(name = "active", nullable = false)
+    private Boolean active;
 }

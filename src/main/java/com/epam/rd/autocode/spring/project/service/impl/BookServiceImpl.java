@@ -24,6 +24,7 @@ public class BookServiceImpl implements BookService {
             throw new AlreadyExistException("Book already exists");
         }
         Book newBook = mapper.map(book, Book.class);
+        newBook.setActive(true);
         Book savedBook = repository.save(newBook);
         return mapper.map(savedBook, BookDTO.class);
     }
@@ -32,6 +33,14 @@ public class BookServiceImpl implements BookService {
     public List<BookDTO> getAllBooks() {
         return repository.findAll()
                 .stream().map(book -> mapper.map(book, BookDTO.class)).toList();
+    }
+
+    @Override
+    public List<BookDTO> getAllBooksForCustomers() {
+        return repository.findByActiveTrue()
+                .stream()
+                .map(book -> mapper.map(book, BookDTO.class))
+                .toList();
     }
 
     @Override
@@ -62,9 +71,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookByName(String name) {
+    public void toggleBookActive(String name) {
         Book book = repository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
-        repository.delete(book);
+
+        book.setActive(!book.getActive());
+        repository.save(book);
     }
 }

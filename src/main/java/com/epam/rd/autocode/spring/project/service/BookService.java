@@ -12,7 +12,9 @@ public interface BookService {
 
     BookDTO updateBookByName(String name, BookDTO book);
 
-    void deleteBookByName(String name);
+    void toggleBookActive(String name);
 
     BookDTO addBook(BookDTO book);
+
+    List<BookDTO> getAllBooksForCustomers();
 }

@@ -1,25 +1,25 @@
-INSERT INTO USERS (ID, EMAIL, NAME, PASSWORD) VALUES
-(NEXT VALUE FOR USER_SEQ, 'john.doe@email.com', 'John Doe', '$2a$12$Zdu304zVW2xz.QxODEYmF.iQd2CD.OPGqJrbt2I1s3M4mKcuIAqZG'),
-(NEXT VALUE FOR USER_SEQ, 'jane.smith@email.com', 'Jane Smith', 'abc456'),
-(NEXT VALUE FOR USER_SEQ, 'bob.jones@email.com', 'Bob Jones', 'qwerty789'),
-(NEXT VALUE FOR USER_SEQ, 'alice.white@email.com', 'Alice White', 'secret567'),
-(NEXT VALUE FOR USER_SEQ, 'mike.wilson@email.com', 'Mike Wilson', 'mypassword'),
-(NEXT VALUE FOR USER_SEQ, 'sara.brown@email.com', 'Sara Brown', 'letmein123'),
-(NEXT VALUE FOR USER_SEQ, 'tom.jenkins@email.com', 'Tom Jenkins', 'pass4321'),
-(NEXT VALUE FOR USER_SEQ, 'lisa.taylor@email.com', 'Lisa Taylor', 'securepwd'),
-(NEXT VALUE FOR USER_SEQ, 'david.wright@email.com', 'David Wright', 'access123'),
-(NEXT VALUE FOR USER_SEQ,'emily.harris@email.com', 'Emily Harris', '1234abcd'),
+INSERT INTO USERS (ID, EMAIL, NAME, PASSWORD, BLOCKED) VALUES
+(NEXT VALUE FOR USER_SEQ, 'john.doe@email.com', 'John Doe', '$2a$12$Zdu304zVW2xz.QxODEYmF.iQd2CD.OPGqJrbt2I1s3M4mKcuIAqZG', 0),
+(NEXT VALUE FOR USER_SEQ, 'jane.smith@email.com', 'Jane Smith', 'abc456', 0),
+(NEXT VALUE FOR USER_SEQ, 'bob.jones@email.com', 'Bob Jones', 'qwerty789', 0),
+(NEXT VALUE FOR USER_SEQ, 'alice.white@email.com', 'Alice White', 'secret567', 0),
+(NEXT VALUE FOR USER_SEQ, 'mike.wilson@email.com', 'Mike Wilson', 'mypassword', 0),
+(NEXT VALUE FOR USER_SEQ, 'sara.brown@email.com', 'Sara Brown', 'letmein123', 0),
+(NEXT VALUE FOR USER_SEQ, 'tom.jenkins@email.com', 'Tom Jenkins', 'pass4321', 0),
+(NEXT VALUE FOR USER_SEQ, 'lisa.taylor@email.com', 'Lisa Taylor', 'securepwd', 0),
+(NEXT VALUE FOR USER_SEQ, 'david.wright@email.com', 'David Wright', 'access123', 0),
+(NEXT VALUE FOR USER_SEQ,'emily.harris@email.com', 'Emily Harris', '1234abcd', 0),
 
-(NEXT VALUE FOR USER_SEQ,'eugene@gmail.com', 'Eugene Tsasiuk', '$2a$12$feLJU3wYmiAG5CdG0tWGE.DHvT7i74fj.VykuMV05Qhw4aHHIZk52'),
-(NEXT VALUE FOR USER_SEQ,'client2@example.com', 'Landon Phillips', 'securepass'),
-(NEXT VALUE FOR USER_SEQ,'client3@example.com', 'Harmony Mason', 'abc123'),
-(NEXT VALUE FOR USER_SEQ,'client4@example.com', 'Archer Harper', 'pass456'),
-(NEXT VALUE FOR USER_SEQ,'client5@example.com', 'Kira Jacobs', 'letmein789'),
-(NEXT VALUE FOR USER_SEQ,'client6@example.com', 'Maximus Kelly', 'adminpass'),
-(NEXT VALUE FOR USER_SEQ,'client7@example.com', 'Sierra Mitchell', 'mypassword'),
-(NEXT VALUE FOR USER_SEQ,'client8@example.com', 'Quinton Saunders', 'test123'),
-(NEXT VALUE FOR USER_SEQ,'client9@example.com', 'Amina Clarke', 'qwerty123'),
-(NEXT VALUE FOR USER_SEQ,'client10@example.com','Bryson Chavez', 'pass789');
+(NEXT VALUE FOR USER_SEQ,'eugene@gmail.com', 'Eugene Tsasiuk', '$2a$12$feLJU3wYmiAG5CdG0tWGE.DHvT7i74fj.VykuMV05Qhw4aHHIZk52', 0),
+(NEXT VALUE FOR USER_SEQ,'client2@example.com', 'Landon Phillips', 'securepass', 0),
+(NEXT VALUE FOR USER_SEQ,'client3@example.com', 'Harmony Mason', 'abc123', 0),
+(NEXT VALUE FOR USER_SEQ,'client4@example.com', 'Archer Harper', 'pass456', 0),
+(NEXT VALUE FOR USER_SEQ,'client5@example.com', 'Kira Jacobs', 'letmein789', 0),
+(NEXT VALUE FOR USER_SEQ,'client6@example.com', 'Maximus Kelly', 'adminpass', 0),
+(NEXT VALUE FOR USER_SEQ,'client7@example.com', 'Sierra Mitchell', 'mypassword', 0),
+(NEXT VALUE FOR USER_SEQ,'client8@example.com', 'Quinton Saunders', 'test123', 0),
+(NEXT VALUE FOR USER_SEQ,'client9@example.com', 'Amina Clarke', 'qwerty123', 0),
+(NEXT VALUE FOR USER_SEQ,'client10@example.com','Bryson Chavez', 'pass789', 0);
 
 INSERT INTO EMPLOYEES (ID, BIRTH_DATE, PHONE) VALUES
 (1, '1990-05-15', '555-123-4567'),
@@ -46,15 +46,15 @@ INSERT INTO CLIENTS (ID, BALANCE) VALUES
 (20, 880.20);
 
 INSERT INTO BOOKS
-(NAME, GENRE, AGE_GROUP, PRICE, PUBLICATION_DATE, AUTHOR, NUMBER_OF_PAGES, CHARACTERISTICS, DESCRIPTION, LANGUAGE)
+(NAME, GENRE, AGE_GROUP, PRICE, PUBLICATION_DATE, AUTHOR, NUMBER_OF_PAGES, CHARACTERISTICS, DESCRIPTION, LANGUAGE, ACTIVE)
 VALUES
-('The Hidden Treasure', 'Adventure', 'ADULT', 24.99, '2018-05-15', 'Emily White', 400, 'Mysterious journey','An enthralling adventure of discovery', 'ENGLISH'),
-('Echoes of Eternity', 'Fantasy', 'TEEN', 16.50, '2011-01-15', 'Daniel Black', 350, 'Magical realms', 'A spellbinding tale of magic and destiny', 'ENGLISH'),
-('Whispers in the Shadows', 'Mystery', 'ADULT', 29.95, '2018-08-11', 'Sophia Green', 450, 'Intriguing suspense','A gripping mystery that keeps you guessing', 'ENGLISH'),
-('The Starlight Sonata', 'Romance', 'ADULT', 21.75, '2011-05-15', 'Michael Rose', 320, 'Heartwarming love story','A beautiful journey of love and passion', 'ENGLISH'),
-('Beyond the Horizon', 'Science Fiction', 'CHILD', 18.99, '2004-05-15', 'Alex Carter', 280,'Interstellar adventure', 'An epic sci-fi adventure beyond the stars', 'ENGLISH'),
-('Dancing with Shadows', 'Thriller', 'ADULT', 26.50, '2015-05-15', 'Olivia Smith', 380, 'Suspenseful twists','A thrilling tale of danger and intrigue', 'ENGLISH'),
-('Voices in the Wind', 'Historical Fiction', 'ADULT', 32.00, '2017-05-15', 'William Turner', 500,'Rich historical setting', 'A compelling journey through time', 'ENGLISH'),
-('Serenade of Souls', 'Fantasy', 'TEEN', 15.99, '2013-05-15', 'Isabella Reed', 330, 'Enchanting realms','A magical fantasy filled with wonder', 'ENGLISH'),
-('Silent Whispers', 'Mystery', 'ADULT', 27.50, '2021-05-15', 'Benjamin Hall', 420, 'Intricate detective work','A mystery that keeps you on the edge', 'ENGLISH'),
-('Whirlwind Romance', 'Romance', 'OTHER', 23.25, '2022-05-15', 'Emma Turner', 360, 'Passionate love affair','A romance that sweeps you off your feet', 'ENGLISH');
+('The Hidden Treasure', 'Adventure', 'ADULT', 24.99, '2018-05-15', 'Emily White', 400, 'Mysterious journey','An enthralling adventure of discovery', 'ENGLISH', 1),
+('Echoes of Eternity', 'Fantasy', 'TEEN', 16.50, '2011-01-15', 'Daniel Black', 350, 'Magical realms', 'A spellbinding tale of magic and destiny', 'ENGLISH', 1),
+('Whispers in the Shadows', 'Mystery', 'ADULT', 29.95, '2018-08-11', 'Sophia Green', 450, 'Intriguing suspense','A gripping mystery that keeps you guessing', 'ENGLISH', 1),
+('The Starlight Sonata', 'Romance', 'ADULT', 21.75, '2011-05-15', 'Michael Rose', 320, 'Heartwarming love story','A beautiful journey of love and passion', 'ENGLISH', 1),
+('Beyond the Horizon', 'Science Fiction', 'CHILD', 18.99, '2004-05-15', 'Alex Carter', 280,'Interstellar adventure', 'An epic sci-fi adventure beyond the stars', 'ENGLISH', 1),
+('Dancing with Shadows', 'Thriller', 'ADULT', 26.50, '2015-05-15', 'Olivia Smith', 380, 'Suspenseful twists','A thrilling tale of danger and intrigue', 'ENGLISH', 1),
+('Voices in the Wind', 'Historical Fiction', 'ADULT', 32.00, '2017-05-15', 'William Turner', 500,'Rich historical setting', 'A compelling journey through time', 'ENGLISH', 1),
+('Serenade of Souls', 'Fantasy', 'TEEN', 15.99, '2013-05-15', 'Isabella Reed', 330, 'Enchanting realms','A magical fantasy filled with wonder', 'ENGLISH', 1),
+('Silent Whispers', 'Mystery', 'ADULT', 27.50, '2021-05-15', 'Benjamin Hall', 420, 'Intricate detective work','A mystery that keeps you on the edge', 'ENGLISH', 1),
+('Whirlwind Romance', 'Romance', 'OTHER', 23.25, '2022-05-15', 'Emma Turner', 360, 'Passionate love affair','A romance that sweeps you off your feet', 'ENGLISH', 1);

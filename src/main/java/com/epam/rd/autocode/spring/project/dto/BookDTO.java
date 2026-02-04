@@ -40,4 +40,5 @@ public class BookDTO {
     private String description;
     @NotNull
     private Language language;
+    private Boolean active;
 }

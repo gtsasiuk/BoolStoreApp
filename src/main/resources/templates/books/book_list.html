@@ -42,12 +42,10 @@
                             Edit
                         </a>
 
-                        <form th:action="@{'/books/delete/' + ${book.name}}"
-                              method="post" class="w-100">
+                        <form th:action="@{'/books/toggle-active/' + ${book.name}}" method="post">
                             <button type="submit"
-                                    class="btn btn-outline-danger btn-sm w-100"
-                                    onclick="return confirm('Delete this book?')">
-                                Delete
+                                    th:class="${book.active} ? 'btn btn-warning' : 'btn btn-success'">
+                                <span th:text="${book.active} ? 'Deactivate' : 'Activate'"></span>
                             </button>
                         </form>
                     </div>
