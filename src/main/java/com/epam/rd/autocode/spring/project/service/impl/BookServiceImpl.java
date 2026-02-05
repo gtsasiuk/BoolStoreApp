@@ -1,13 +1,22 @@
 package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.BookDTO;
+import com.epam.rd.autocode.spring.project.dto.BookFilterDTO;
 import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
 import com.epam.rd.autocode.spring.project.exception.NotFoundException;
 import com.epam.rd.autocode.spring.project.model.Book;
+import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
+import com.epam.rd.autocode.spring.project.model.enums.Language;
 import com.epam.rd.autocode.spring.project.repo.BookRepository;
 import com.epam.rd.autocode.spring.project.service.BookService;
+import com.epam.rd.autocode.spring.project.specification.BookSpecs;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,17 +39,35 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDTO> getAllBooks() {
-        return repository.findAll()
-                .stream().map(book -> mapper.map(book, BookDTO.class)).toList();
-    }
+    public Page<BookDTO> getAllBooks(BookFilterDTO filter, Boolean isEmployee) {
+        Pageable pageable = PageRequest.of(
+                filter.getSafePage(),
+                filter.getSafeSize(),
+                Sort.by(Sort.Direction.fromString(filter.getSafeDir()), filter.getSafeSort())
+        );
 
-    @Override
-    public List<BookDTO> getAllBooksForCustomers() {
-        return repository.findByActiveTrue()
-                .stream()
-                .map(book -> mapper.map(book, BookDTO.class))
-                .toList();
+        Specification<Book> spec = Specification.where(null);
+
+        if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
+            spec = spec.and(BookSpecs.nameContains(filter.getSearch()));
+        }
+
+        if (filter.getAgeGroup() != null) {
+            spec = spec.and(BookSpecs.hasAgeGroup(filter.getAgeGroup()));
+        }
+
+        if (filter.getLanguage() != null) {
+            spec = spec.and(BookSpecs.hasLanguage(filter.getLanguage()));
+        }
+
+        if (!isEmployee) {
+            spec = spec.and(BookSpecs.isActive());
+        } else if (filter.getActive() != null) {
+            spec = spec.and(BookSpecs.hasActive(filter.getActive()));
+        }
+
+        return repository.findAll(spec, pageable)
+                .map(book -> mapper.map(book, BookDTO.class));
     }
 
     @Override

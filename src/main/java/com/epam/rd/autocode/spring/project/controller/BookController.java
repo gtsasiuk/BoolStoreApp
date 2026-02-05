@@ -1,11 +1,13 @@
 package com.epam.rd.autocode.spring.project.controller;
 
 import com.epam.rd.autocode.spring.project.dto.BookDTO;
+import com.epam.rd.autocode.spring.project.dto.BookFilterDTO;
 import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
 import com.epam.rd.autocode.spring.project.model.enums.Language;
 import com.epam.rd.autocode.spring.project.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -20,16 +22,14 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public String booksPage(Model model, Authentication auth) {
+    public String booksPage(@ModelAttribute("filter") BookFilterDTO filter, Model model, Authentication auth) {
         boolean isEmployee = auth != null &&
                 auth.getAuthorities().stream()
                         .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"));
 
-        if (isEmployee) {
-            model.addAttribute("books", bookService.getAllBooks());
-        } else {
-            model.addAttribute("books", bookService.getAllBooksForCustomers());
-        }
+        Page<BookDTO> books = bookService.getAllBooks(filter, isEmployee);
+
+        model.addAttribute("books", books);
 
         return "books/book_list";
     }
@@ -82,8 +82,8 @@ public class BookController {
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/toggle-active/{name}")
-    public String toggleBookStatus(@PathVariable String name) {
+    public String toggleBookStatus(@ModelAttribute("filter") BookFilterDTO filter, @PathVariable String name) {
         bookService.toggleBookActive(name);
-        return "redirect:/books";
+        return "redirect:/books?" + filter.toQueryString();
     }
 }

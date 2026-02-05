@@ -1,12 +1,14 @@
 package com.epam.rd.autocode.spring.project.service;
 
 import com.epam.rd.autocode.spring.project.dto.BookDTO;
+import com.epam.rd.autocode.spring.project.dto.BookFilterDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface BookService {
 
-    List<BookDTO> getAllBooks();
+    Page<BookDTO> getAllBooks(BookFilterDTO filter, Boolean isEmployee);
 
     BookDTO getBookByName(String name);
 
@@ -15,6 +17,4 @@ public interface BookService {
     void toggleBookActive(String name);
 
     BookDTO addBook(BookDTO book);
-
-    List<BookDTO> getAllBooksForCustomers();
 }

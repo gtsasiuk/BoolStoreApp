@@ -16,34 +16,103 @@
     <div class="mb-4" sec:authorize="hasRole('EMPLOYEE')">
         <a href="/books/add" class="btn btn-success">+ Add New Book</a>
     </div>
+
+    <form method="get" th:action="@{/books}" th:object="${filter}" class="card mb-4 p-3 shadow-sm">
+        <div class="row g-3 align-items-end">
+
+            <div class="col-md-3">
+                <label>Search</label>
+                <input type="text" th:field="*{search}" placeholder="Book name..." class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>Age group</label>
+                <select th:field="*{ageGroup}" class="form-select">
+                    <option value="">All</option>
+                    <option th:each="ag : ${T(com.epam.rd.autocode.spring.project.model.enums.AgeGroup).values()}"
+                            th:value="${ag}" th:text="${ag}"></option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>Language</label>
+                <select th:field="*{language}" class="form-select">
+                    <option value="">All</option>
+                    <option th:each="lang : ${T(com.epam.rd.autocode.spring.project.model.enums.Language).values()}"
+                            th:value="${lang}" th:text="${lang}"></option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>Sort by</label>
+                <select th:field="*{sort}" class="form-select">
+                    <option value="name">Name</option>
+                    <option value="author">Author</option>
+                    <option value="genre">Genre</option>
+                    <option value="price">Price</option>
+                    <option value="publicationDate">Date</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>Direction</label>
+                <select th:field="*{dir}" class="form-select">
+                    <option value="asc">↑ Asc</option>
+                    <option value="desc">↓ Desc</option>
+                </select>
+            </div>
+
+            <div class="col-md-1" sec:authorize="hasRole('EMPLOYEE')">
+                <label>Status</label>
+                <select th:field="*{active}" class="form-select">
+                    <option value="">All</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+
+            <input type="hidden" th:field="*{page}" value="0">
+
+            <div class="col-md-12 text-end mt-2">
+                <button class="btn btn-primary">Apply</button>
+                <a href="/books" class="btn btn-secondary ms-2">Reset</a>
+            </div>
+        </div>
+    </form>
+
     <div class="row g-4">
+        <div th:if="${#lists.isEmpty(books.content)}" class="col-12">
+            <div class="alert alert-warning text-center">
+                No books found for the selected filters.
+            </div>
+        </div>
         <div th:each="book : ${books}" class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 book-card">
+            <div class="card h-100 book-card shadow-sm">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title" th:text="${book.name}"></h5>
-
-                    <p class="card-text">
-                        <strong>Genre:</strong> <span th:text="${book.genre}"></span>
-                    </p>
-                    <p class="card-text">
-                        <strong>Price:</strong> $<span th:text="${book.price}"></span>
-                    </p>
-
+                    <p class="card-text"><strong>Genre:</strong> <span th:text="${book.genre}"></span></p>
+                    <p class="card-text"><strong>Author:</strong> <span th:text="${book.author}"></span></p>
+                    <p class="card-text"><strong>Publication Date:</strong> <span th:text="${book.publicationDate}"></span></p>
+                    <p class="card-text"><strong>Price:</strong> $<span th:text="${book.price}"></span></p>
                     <p class="card-text text-truncate" th:text="${book.description}"></p>
 
-                    <a th:href="@{'/books/' + ${book.name}}"
-                       class="btn btn-primary mt-auto mb-2">
+                    <a th:href="@{'/books/' + ${book.name}}" class="btn btn-primary mt-auto mb-2">
                         View details
                     </a>
 
                     <div sec:authorize="hasRole('EMPLOYEE')" class="d-flex gap-2 mt-2">
-                        <a th:href="@{'/books/edit/' + ${book.name}}"
-                           class="btn btn-edit btn-sm w-100">
-                            Edit
-                        </a>
+                        <a th:href="@{'/books/edit/' + ${book.name}}" class="btn btn-edit btn-sm w-100">Edit</a>
 
-                        <form th:action="@{'/books/toggle-active/' + ${book.name}}"
-                              method="post" class="w-100">
+                        <form th:action="@{'/books/toggle-active/' + ${book.name}}" method="post" class="w-100">
+                            <input type="hidden" th:field="*{filter.page}">
+                            <input type="hidden" th:field="*{filter.size}">
+                            <input type="hidden" th:field="*{filter.sort}">
+                            <input type="hidden" th:field="*{filter.dir}">
+                            <input type="hidden" th:field="*{filter.search}">
+                            <input type="hidden" th:field="*{filter.ageGroup}">
+                            <input type="hidden" th:field="*{filter.language}">
+                            <input type="hidden" th:field="*{filter.active}">
+
                             <button type="submit"
                                     th:class="${book.active} ? 'btn btn-deactivate btn-sm w-100' : 'btn btn-activate btn-sm w-100'">
                                 <span th:text="${book.active} ? 'Deactivate' : 'Activate'"></span>
@@ -55,6 +124,61 @@
             </div>
         </div>
     </div>
+
+    <nav class="mt-4" th:if="${books.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item" th:if="${filter.page != 0}" th:classappend="${books.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/books(
+                    page=${books.number - 1},
+                    size=${filter.size},
+                    sort=${filter.sort},
+                    dir=${filter.dir},
+                    search=${filter.search},
+                    ageGroup=${filter.ageGroup},
+                    language=${filter.language},
+                    active=${filter.active}
+                )}">
+                    <-
+                </a>
+            </li>
+
+            <li th:each="i : ${#numbers.sequence(0, books.totalPages - 1)}"
+                class="page-item" th:classappend="${i == books.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/books(
+                    page=${i},
+                    size=${filter.size},
+                    sort=${filter.sort},
+                    dir=${filter.dir},
+                    search=${filter.search},
+                    ageGroup=${filter.ageGroup},
+                    language=${filter.language},
+                    active=${filter.active}
+               )}"
+                   th:text="${i + 1}">
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${filter.page < books.totalPages - 1}"
+                th:classappend="${books.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/books(
+                    page=${books.number + 1},
+                    size=${filter.size},
+                    sort=${filter.sort},
+                    dir=${filter.dir},
+                    search=${filter.search},
+                    ageGroup=${filter.ageGroup},
+                    language=${filter.language},
+                    active=${filter.active}
+                )}">
+                    ->
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
 </div>
 
 </body>

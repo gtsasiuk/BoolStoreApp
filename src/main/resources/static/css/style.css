@@ -252,3 +252,39 @@ input:focus {
     border-radius: 8px;
     font-size: 13px;
 }
+
+/* Pagination */
+.pagination {
+    justify-content: center;
+    margin-top: 30px;
+    gap: 8px;
+}
+
+.pagination .page-item {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.pagination .page-item .page-link {
+    border: none;
+    color: #2f3640;
+    background-color: #f7f8fc;
+    padding: 8px 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #6c5ce7, #5a4de8);
+    color: white;
+    box-shadow: 0 6px 16px rgba(108,92,231,0.3);
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #e0e0ff;
+    color: #6c5ce7;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108,92,231,0.2);
+}
