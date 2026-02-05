@@ -1,17 +1,21 @@
 package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.EmployeeDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.UserFilterDTO;
 import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
 import com.epam.rd.autocode.spring.project.exception.NotFoundException;
-import com.epam.rd.autocode.spring.project.model.Client;
 import com.epam.rd.autocode.spring.project.model.Employee;
 import com.epam.rd.autocode.spring.project.repo.EmployeeRepository;
 import com.epam.rd.autocode.spring.project.service.EmployeeService;
+import com.epam.rd.autocode.spring.project.specification.EmployeeSpecs;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -40,9 +44,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeDTO> getAllEmployees() {
-        return repository.findAll()
-                .stream().map(employee -> mapper.map(employee, EmployeeDTO.class)).toList();
+    public Page<EmployeeDTO> getAllEmployees(UserFilterDTO filter) {
+        Pageable pageable = PageRequest.of(
+                filter.getSafePage(),
+                filter.getSafeSize(),
+                Sort.by(Sort.Direction.fromString(filter.getSafeDir()), filter.getSafeSort())
+        );
+
+        Specification<Employee> spec = Specification.where(null);
+
+        if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
+            spec = spec.and(EmployeeSpecs.nameOrEmailContains(filter.getSearch()));
+        }
+
+        if (filter.getBlocked() != null) {
+            spec = spec.and(EmployeeSpecs.hasBlockedStatus(filter.getBlocked()));
+        }
+
+        return repository.findAll(spec, pageable)
+                .map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
     @Override

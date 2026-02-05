@@ -1,9 +1,11 @@
 package com.epam.rd.autocode.spring.project.controller;
 
 import com.epam.rd.autocode.spring.project.dto.EmployeeDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.UserFilterDTO;
 import com.epam.rd.autocode.spring.project.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,13 +20,14 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping
-    public String allClients(Model model) {
-        model.addAttribute("employees", employeeService.getAllEmployees());
+    public String allEmployees(@ModelAttribute("filter") UserFilterDTO filter, Model model) {
+        Page<EmployeeDTO> employees = employeeService.getAllEmployees(filter);
+        model.addAttribute("employees", employees);
         return "employees/employee_list";
     }
 
     @PostMapping("/toggle-block")
-    public String blockClient(@RequestParam String email) {
+    public String blockEmployee(@RequestParam String email) {
         if (email.equals(SecurityContextHolder.getContext()
                 .getAuthentication().getName())) {
             throw new IllegalStateException("You cannot block yourself");

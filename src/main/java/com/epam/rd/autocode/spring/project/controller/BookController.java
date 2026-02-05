@@ -1,7 +1,7 @@
 package com.epam.rd.autocode.spring.project.controller;
 
 import com.epam.rd.autocode.spring.project.dto.BookDTO;
-import com.epam.rd.autocode.spring.project.dto.BookFilterDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.BookFilterDTO;
 import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
 import com.epam.rd.autocode.spring.project.model.enums.Language;
 import com.epam.rd.autocode.spring.project.service.BookService;

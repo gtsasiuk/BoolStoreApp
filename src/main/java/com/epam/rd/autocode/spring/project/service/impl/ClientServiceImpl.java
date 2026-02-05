@@ -1,17 +1,24 @@
 package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.ClientDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.UserFilterDTO;
 import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
 import com.epam.rd.autocode.spring.project.exception.NotFoundException;
 import com.epam.rd.autocode.spring.project.model.Client;
 import com.epam.rd.autocode.spring.project.repo.ClientRepository;
 import com.epam.rd.autocode.spring.project.service.ClientService;
+import com.epam.rd.autocode.spring.project.specification.ClientSpecs;
+import com.epam.rd.autocode.spring.project.specification.EmployeeSpecs;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -51,9 +58,25 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientDTO> getAllClients() {
-        return repository.findAll()
-                .stream().map(client -> mapper.map(client, ClientDTO.class)).toList();
+    public Page<ClientDTO> getAllClients(UserFilterDTO filter) {
+        Pageable pageable = PageRequest.of(
+                filter.getSafePage(),
+                filter.getSafeSize(),
+                Sort.by(Sort.Direction.fromString(filter.getSafeDir()), filter.getSafeSort())
+        );
+
+        Specification<Client> spec = Specification.where(null);
+
+        if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
+            spec = spec.and(ClientSpecs.nameOrEmailContains(filter.getSearch()));
+        }
+
+        if (filter.getBlocked() != null) {
+            spec = spec.and(ClientSpecs.hasBlockedStatus(filter.getBlocked()));
+        }
+
+        return repository.findAll(spec, pageable)
+                .map(client -> mapper.map(client, ClientDTO.class));
     }
 
     @Override

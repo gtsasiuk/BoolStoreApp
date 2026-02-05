@@ -1,13 +1,14 @@
 package com.epam.rd.autocode.spring.project.service;
 
 import com.epam.rd.autocode.spring.project.dto.ClientDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.UserFilterDTO;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public interface ClientService {
 
-    List<ClientDTO> getAllClients();
+    Page<ClientDTO> getAllClients(UserFilterDTO filter);
 
     ClientDTO getClientByEmail(String email);
 

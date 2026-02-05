@@ -19,7 +19,51 @@
       + Add employee
     </a>
 
-    <table class="table table-hover align-middle">
+    <form method="get" th:action="@{/employees}" th:object="${filter}" class="card mb-4 p-3 shadow-sm">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label>Search</label>
+          <input type="text" th:field="*{search}" placeholder="Name or email..." class="form-control">
+        </div>
+        <div class="col-md-3">
+          <label>Status</label>
+          <select th:field="*{blocked}" class="form-select">
+            <option value="">All</option>
+            <option value="true">Blocked</option>
+            <option value="false">Active</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Sort by</label>
+          <select th:field="*{sort}" class="form-select">
+            <option value="name">Name</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="birthDate">Birth Date</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>Direction</label>
+          <select th:field="*{dir}" class="form-select">
+            <option value="asc">↑ Asc</option>
+            <option value="desc">↓ Desc</option>
+          </select>
+        </div>
+        <input type="hidden" th:field="*{page}" value="0">
+        <div class="col-md-12 text-end mt-2">
+          <button class="btn btn-primary">Apply</button>
+          <a href="/employees" class="btn btn-secondary ms-2">Reset</a>
+        </div>
+      </div>
+    </form>
+
+    <div th:if="${#lists.isEmpty(employees.content)}" class="col-12">
+      <div class="alert alert-warning text-center">
+        No employees found for the selected filters.
+      </div>
+    </div>
+    <table class="table table-hover align-middle"
+           th:if="${!#lists.isEmpty(employees.content)}">
       <thead>
       <tr>
         <th>Name</th>
@@ -61,6 +105,23 @@
       </tr>
       </tbody>
     </table>
+
+    <nav class="mt-4" th:if="${employees.totalPages > 1}">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${employees.first} ? 'disabled'">
+          <a class="page-link" th:href="@{/employees(page=${employees.number - 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&larr;</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(0, employees.totalPages - 1)}"
+            class="page-item" th:classappend="${i == employees.number} ? 'active'">
+          <a class="page-link" th:href="@{/employees(page=${i}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}"
+             th:text="${i + 1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${employees.last} ? 'disabled'">
+          <a class="page-link" th:href="@{/employees(page=${employees.number + 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&rarr;</a>
+        </li>
+
+      </ul>
+    </nav>
   </div>
 </div>
 

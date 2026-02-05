@@ -15,7 +15,49 @@
   <div class="card">
     <h2 class="mb-4">Clients List</h2>
 
-    <table class="table table-hover align-middle">
+    <form method="get" th:action="@{/clients}" th:object="${filter}" class="card mb-4 p-3 shadow-sm">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label>Search</label>
+          <input type="text" th:field="*{search}" placeholder="Name or email..." class="form-control">
+        </div>
+        <div class="col-md-3">
+          <label>Status</label>
+          <select th:field="*{blocked}" class="form-select">
+            <option value="">All</option>
+            <option value="true">Blocked</option>
+            <option value="false">Active</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Sort by</label>
+          <select th:field="*{sort}" class="form-select">
+            <option value="name">Name</option>
+            <option value="email">Email</option>
+            <option value="balance">Balance</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>Direction</label>
+          <select th:field="*{dir}" class="form-select">
+            <option value="asc">↑ Asc</option>
+            <option value="desc">↓ Desc</option>
+          </select>
+        </div>
+        <input type="hidden" th:field="*{page}" value="0">
+        <div class="col-md-12 text-end mt-2">
+          <button class="btn btn-primary">Apply</button>
+          <a href="/clients" class="btn btn-secondary ms-2">Reset</a>
+        </div>
+      </div>
+    </form>
+    <div th:if="${#lists.isEmpty(clients.content)}" class="col-12">
+      <div class="alert alert-warning text-center">
+        No client found for the selected filters.
+      </div>
+    </div>
+    <table class="table table-hover align-middle"
+           th:if="${!#lists.isEmpty(clients.content)}">
       <thead>
       <tr>
         <th>Name</th>
@@ -41,6 +83,12 @@
           <form th:action="@{/clients/toggle-block}"
                 method="post"
                 class="d-inline">
+            <input type="hidden" th:field="*{filter.page}">
+            <input type="hidden" th:field="*{filter.size}">
+            <input type="hidden" th:field="*{filter.sort}">
+            <input type="hidden" th:field="*{filter.dir}">
+            <input type="hidden" th:field="*{filter.search}">
+            <input type="hidden" th:field="*{filter.blocked}">
 
             <input type="hidden" name="email" th:value="${client.email}"/>
 
@@ -55,6 +103,24 @@
       </tr>
       </tbody>
     </table>
+
+    <nav class="mt-4" th:if="${clients.totalPages > 1}">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${clients.first} ? 'disabled'">
+          <a class="page-link" th:href="@{/clients(page=${clients.number - 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&larr;</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(0, clients.totalPages - 1)}"
+            class="page-item" th:classappend="${i == clients.number} ? 'active'">
+          <a class="page-link" th:href="@{/clients(page=${i}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}"
+             th:text="${i + 1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${clients.last} ? 'disabled'">
+          <a class="page-link" th:href="@{/clients(page=${clients.number + 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&rarr;</a>
+        </li>
+
+      </ul>
+    </nav>
+
   </div>
 </div>
 

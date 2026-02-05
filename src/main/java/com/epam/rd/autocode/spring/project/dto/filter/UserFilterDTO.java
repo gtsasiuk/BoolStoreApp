@@ -1,7 +1,5 @@
-package com.epam.rd.autocode.spring.project.dto;
+package com.epam.rd.autocode.spring.project.dto.filter;
 
-import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
-import com.epam.rd.autocode.spring.project.model.enums.Language;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,22 +8,20 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class BookFilterDTO {
+public class UserFilterDTO {
     private String search;
-    private AgeGroup ageGroup;
-    private Language language;
+    private Integer page = 0;
+    private Integer size = 5;
     private String sort = "name";
     private String dir = "asc";
-    private Boolean active;
-    private Integer page = 0;
-    private Integer size = 12;
+    private Boolean blocked;
 
     public int getSafePage() {
         return page != null ? page : 0;
     }
 
     public int getSafeSize() {
-        return size != null ? size : 12;
+        return size != null ? size : 10;
     }
 
     public String getSafeSort() {
