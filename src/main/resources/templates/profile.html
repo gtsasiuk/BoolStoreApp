@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title th:text="#{page.profile.title}">Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -11,62 +11,63 @@
 
 <div class="container my-5">
     <div class="card form-card p-4">
-        <h2 class="mb-4">My Profile</h2>
+        <h2 class="mb-4" th:text="#{profile.title}">My Profile</h2>
 
         <div th:if="${!edit}">
-            <p><strong>Name:</strong> <span th:text="${user.name}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong th:text="#{profile.name} + ':'">Name:</strong> <span th:text="${user.name}"></span></p>
+            <p><strong th:text="#{profile.email} + ':'">Email:</strong> <span th:text="${user.email}"></span></p>
 
             <div th:if="${user.balance != null}">
-                <p><strong>Balance:</strong> $<span th:text="${user.balance}"></span></p>
+                <p><strong th:text="#{profile.balance} + ':'">Balance:</strong> $<span th:text="${user.balance}"></span></p>
             </div>
 
             <div th:if="${user.phone != null}">
-                <p><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
-                <p><strong>Birth Date:</strong> <span th:text="${user.birthDate}"></span></p>
+                <p><strong th:text="#{profile.phone} + ':'">Phone:</strong> <span th:text="${user.phone}"></span></p>
+                <p><strong th:text="#{profile.birthDate} + ':'">Birth Date:</strong> <span th:text="${user.birthDate}"></span></p>
             </div>
 
             <div class="mb-3">
-                <strong>Status:</strong>
-                <span th:if="${user.blocked}" class="badge bg-danger">Blocked</span>
-                <span th:if="${!user.blocked}" class="badge bg-success">Active</span>
+                <strong th:text="#{profile.status} + ':'">Status:</strong>
+                <span th:if="${user.blocked}" class="badge bg-danger" th:text="#{profile.blocked}">Blocked</span>
+                <span th:if="${!user.blocked}" class="badge bg-success" th:text="#{profile.active}">Active</span>
             </div>
 
             <form th:action="@{/profile}" method="get">
-                <button type="submit" class="btn btn-primary" name="edit" value="true">Edit Profile</button>
+                <button type="submit" class="btn btn-primary" name="edit" value="true"
+                        th:text="#{profile.edit}">Edit Profile</button>
             </form>
         </div>
 
         <div th:if="${edit}">
             <form th:action="@{/profile}" th:object="${userUpdate}" method="post">
                 <div class="mb-3">
-                    <label>Name:</label>
+                    <label th:text="#{profile.name} + ':'">Name:</label>
                     <input type="text" th:field="*{name}" class="form-control" />
                 </div>
                 <div class="mb-3" th:if="${userUpdate.balance != null}">
-                    <label>Balance:</label>
+                    <label th:text="#{profile.balance} + ':'">Balance:</label>
                     <input type="number" th:field="*{balance}" step="0.01" class="form-control" />
                 </div>
                 <div class="mb-3" th:if="${userUpdate.phone != null}">
-                    <label>Phone:</label>
+                    <label th:text="#{profile.email} + ':'">Phone:</label>
                     <input type="text" th:field="*{phone}" class="form-control" />
                 </div>
                 <div class="mb-3" th:if="${userUpdate.birthDate != null}">
-                    <label>Birth Date:</label>
+                    <label th:text="#{profile.birthDate} + ':'">Birth Date:</label>
                     <input type="date" th:field="*{birthDate}" class="form-control" />
                 </div>
                 <div class="mb-3">
                     <strong>Status:</strong>
-                    <span th:if="${user.blocked}" class="badge bg-danger">Blocked</span>
-                    <span th:if="${!user.blocked}" class="badge bg-success">Active</span>
+                    <span th:if="${user.blocked}" class="badge bg-danger" th:text="#{profile.blocked}">Blocked</span>
+                    <span th:if="${!user.blocked}" class="badge bg-success" th:text="#{profile.active}">Active</span>
                 </div>
                 <div class="gap-2">
                     <form th:action="@{/profile}" th:object="${userUpdate}" method="post">
-                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                        <button type="submit" class="btn btn-primary w-100" th:text="#{profile.save}">Save</button>
                     </form>
                     <form th:if="${userUpdate.balance != null}" th:action="@{/profile/delete}" method="post" class="mt-3"
-                          onsubmit="return confirm('Are you sure you want to delete your account?')">
-                        <button class="btn btn-danger w-100">Delete Account</button>
+                          th:onsubmit="return confirm([[#{profile.confirmDelete}]])">
+                        <button class="btn btn-danger w-100" th:text="#{profile.delete}">Delete Account</button>
                     </form>
                 </div>
             </form>

@@ -212,7 +212,6 @@ input:focus {
 }
 
 .book-description {
-    white-space: pre-line;
     color: #555;
 }
 

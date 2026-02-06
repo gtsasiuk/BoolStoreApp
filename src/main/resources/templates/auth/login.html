@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title th:text="#{page.login.title}">Login</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -12,24 +13,37 @@
 
 <div class="container my-5">
   <div class="card form-card p-4">
-    <h2 class="mb-4">Login</h2>
+    <h2 class="mb-4" th:text="#{login.title}">Login</h2>
 
     <form method="post" action="/auth/login">
       <div class="mb-3">
-        <label>Email</label>
-        <input type="email" name="email" required class="form-control">
+        <label th:text="#{login.email}">Email</label>
+        <input type="email"
+               name="email"
+               required
+               class="form-control"
+               th:placeholder="#{login.email}">
       </div>
 
       <div class="mb-3">
-        <label>Password</label>
-        <input type="password" name="password" required class="form-control">
+        <label th:text="#{login.password}">Password</label>
+        <input type="password"
+               name="password"
+               required
+               class="form-control"
+               th:placeholder="#{login.password}">
       </div>
 
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit"
+              class="btn btn-primary"
+              th:text="#{button.login}">
+        Login
+      </button>
     </form>
 
     <div class="link mt-3">
-      Don’t have an account? <a href="/auth/register">Register</a>
+      <span th:text="#{link.noAccount}">Don’t have an account?</span>
+      <a href="/auth/register" th:text="#{link.register}">Register</a>
     </div>
   </div>
 </div>
