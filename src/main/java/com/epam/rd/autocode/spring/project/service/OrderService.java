@@ -1,6 +1,8 @@
 package com.epam.rd.autocode.spring.project.service;
 
 import com.epam.rd.autocode.spring.project.dto.OrderDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.OrderFilterDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.*;
 
@@ -12,7 +14,7 @@ public interface OrderService {
 
     OrderDTO addOrder(OrderDTO order);
 
-    List<OrderDTO> getAllOrders();
+    Page<OrderDTO> getAllOrders(OrderFilterDTO filter);
 
     OrderDTO getOrderById(Long id);
 

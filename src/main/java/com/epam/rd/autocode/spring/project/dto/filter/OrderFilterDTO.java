@@ -1,5 +1,6 @@
 package com.epam.rd.autocode.spring.project.dto.filter;
 
+import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,28 +9,28 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class UserFilterDTO {
+public class OrderFilterDTO {
     private String search;
+    private OrderStatus status;
     private Integer page = 0;
-    private Integer size = 5;
-    private String sort = "name";
-    private String dir = "asc";
-    private Boolean blocked;
+    private Integer size = 10;
+    private String sort = "orderDate";
+    private String dir = "desc";
 
     public int getSafePage() {
         return page != null ? page : 0;
     }
 
     public int getSafeSize() {
-        return size != null ? size : 5;
+        return size != null ? size : 10;
     }
 
     public String getSafeSort() {
-        return sort != null ? sort : "name";
+        return sort != null ? sort : "orderDate";
     }
 
     public String getSafeDir() {
-        return dir != null ? dir : "asc";
+        return dir != null ? dir : "desc";
     }
 
     public String toQueryString() {

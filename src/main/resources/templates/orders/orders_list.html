@@ -11,11 +11,64 @@
 <div class="container my-5">
   <h2>Orders Management 🧾</h2>
 
-  <table class="table table-hover align-middle">
+  <form method="get" th:action="@{/orders}" th:object="${filter}" class="card p-3 mb-4">
+    <div class="row g-3 align-items-end">
+
+      <div class="col-md-4">
+        <label>Search</label>
+        <input class="form-control" th:field="*{search}"
+               placeholder="Client or employee email">
+      </div>
+
+      <div class="col-md-3">
+        <label>Status</label>
+        <select class="form-select" th:field="*{status}">
+          <option value="">All</option>
+          <option value="NEW">New</option>
+          <option value="CONFIRMED">Confirmed</option>
+          <option value="CANCELLED">Cancelled</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label>Sort by</label>
+        <select class="form-select" th:field="*{sort}">
+          <option value="orderDate">Date</option>
+          <option value="price">Price</option>
+          <option value="orderStatus">Status</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label>Dir</label>
+        <select class="form-select" th:field="*{dir}">
+          <option value="desc">↓ Desc</option>
+          <option value="asc">↑ Asc</option>
+        </select>
+      </div>
+
+      <input type="hidden" th:field="*{page}" value="0">
+
+      <div class="col-12 text-end">
+        <button class="btn btn-primary">Apply</button>
+        <a href="/orders" class="btn btn-secondary ms-2">Reset</a>
+      </div>
+
+    </div>
+  </form>
+
+  <div th:if="${#lists.isEmpty(orders.content)}" class="col-12">
+    <div class="alert alert-warning text-center">
+      No client found for the selected filters.
+    </div>
+  </div>
+  <table class="table table-hover align-middle"
+         th:if="!${#lists.isEmpty(orders.content)}">
     <thead>
     <tr>
       <th>ID</th>
       <th>Client</th>
+      <th>Employee</th>
       <th>Date</th>
       <th>Status</th>
       <th>Total</th>
@@ -26,6 +79,13 @@
     <tr th:each="order : ${orders}">
       <td th:text="${order.id}"></td>
       <td th:text="${order.clientEmail}"></td>
+      <td>
+          <span th:if="${order.employeeEmail != null}"
+                th:text="${order.employeeEmail}"></span>
+          <span th:if="${order.employeeEmail == null}"
+                class="text-muted">—</span>
+      </td>
+
       <td th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></td>
       <td>
         <span class="badge bg-warning" th:if="${order.status.name() == 'NEW'}">NEW</span>
@@ -36,12 +96,34 @@
       <td class="d-flex gap-2">
         <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-outline-primary btn-sm flex-grow-1">View</a>
         <form th:if="${order.status.name() == 'NEW'}" th:action="@{/orders/confirm/{id}(id=${order.id})}" method="post" class="flex-grow-1">
+          <input type="hidden" th:field="*{filter.page}">
+          <input type="hidden" th:field="*{filter.size}">
+          <input type="hidden" th:field="*{filter.sort}">
+          <input type="hidden" th:field="*{filter.dir}">
+          <input type="hidden" th:field="*{filter.search}">
+          <input type="hidden" th:field="*{filter.status}">
           <button class="btn btn-success btn-sm w-100">Confirm</button>
         </form>
       </td>
     </tr>
     </tbody>
   </table>
+  <nav class="mt-4" th:if="${orders.totalPages > 1}">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:if="${filter.page != 0}" th:classappend="${orders.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/orders(page=${orders.number - 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, status=${filter.status})}">&larr;</a>
+      </li>
+      <li th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+          class="page-item" th:classappend="${i == orders.number} ? 'active'">
+        <a class="page-link" th:href="@{/orders(page=${i}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, status=${filter.status})}"
+           th:text="${i + 1}"></a>
+      </li>
+      <li class="page-item" th:if="${filter.page < orders.totalPages - 1}" th:classappend="${orders.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/orders(page=${orders.number + 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, status=${filter.status})}">&rarr;</a>
+      </li>
+
+    </ul>
+  </nav>
 </div>
 </body>
 </html>

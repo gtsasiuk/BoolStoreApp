@@ -106,7 +106,7 @@
 
     <nav class="mt-4" th:if="${clients.totalPages > 1}">
       <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${clients.first} ? 'disabled'">
+        <li class="page-item" th:if="${filter.page != 0}" th:classappend="${clients.first} ? 'disabled'">
           <a class="page-link" th:href="@{/clients(page=${clients.number - 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&larr;</a>
         </li>
         <li th:each="i : ${#numbers.sequence(0, clients.totalPages - 1)}"
@@ -114,7 +114,7 @@
           <a class="page-link" th:href="@{/clients(page=${i}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}"
              th:text="${i + 1}"></a>
         </li>
-        <li class="page-item" th:classappend="${clients.last} ? 'disabled'">
+        <li class="page-item" th:if="${filter.page < clients.totalPages - 1}"  th:classappend="${clients.last} ? 'disabled'">
           <a class="page-link" th:href="@{/clients(page=${clients.number + 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&rarr;</a>
         </li>
 

@@ -2,6 +2,8 @@ package com.epam.rd.autocode.spring.project.service.impl;
 
 import com.epam.rd.autocode.spring.project.dto.BookItemDTO;
 import com.epam.rd.autocode.spring.project.dto.OrderDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.OrderFilterDTO;
+import com.epam.rd.autocode.spring.project.exception.NotFoundException;
 import com.epam.rd.autocode.spring.project.model.*;
 import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import com.epam.rd.autocode.spring.project.repo.BookRepository;
@@ -10,8 +12,13 @@ import com.epam.rd.autocode.spring.project.repo.EmployeeRepository;
 import com.epam.rd.autocode.spring.project.repo.OrderRepository;
 import com.epam.rd.autocode.spring.project.service.ClientService;
 import com.epam.rd.autocode.spring.project.service.OrderService;
+import com.epam.rd.autocode.spring.project.specification.OrderSpecs;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,11 +64,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO addOrder(OrderDTO order) {
         Client client = clientRepository.findByEmail(order.getClientEmail())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new NotFoundException("Client not found"));
         Employee employee = null;
         if (order.getEmployeeEmail() != null) {
             employee = employeeRepository.findByEmail(order.getEmployeeEmail())
-                    .orElseThrow(() -> new RuntimeException("Employee not found"));
+                    .orElseThrow(() -> new NotFoundException("Employee not found"));
         }
 
         Order newOrder = new Order();
@@ -72,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal total = order.getBookItems().stream()
                 .map(itemDTO -> {
                     Book book = bookRepository.findByName(itemDTO.getBookName())
-                            .orElseThrow(() -> new RuntimeException("Book not found"));
+                            .orElseThrow(() -> new NotFoundException("Book not found"));
 
                     return book.getPrice()
                             .multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
@@ -84,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(itemDTO -> {
                     Book book = bookRepository.findByName(itemDTO.getBookName())
                             .orElseThrow(() ->
-                                    new RuntimeException("Book not found: " + itemDTO.getBookName()));
+                                    new NotFoundException("Book not found: " + itemDTO.getBookName()));
 
                     BookItem item = new BookItem();
                     item.setBook(book);
@@ -124,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void cancelOrder(Long orderId, String clientEmail) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("Order not found"));
 
         if (!order.getClient().getEmail().equals(clientEmail)) {
             throw new RuntimeException("You cannot cancel someone else's order");
@@ -156,13 +163,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
-    public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<OrderDTO> getAllOrders(OrderFilterDTO filter) {
+        Pageable pageable = PageRequest.of(
+                filter.getSafePage(),
+                filter.getSafeSize(),
+                Sort.by(
+                        Sort.Direction.fromString(filter.getSafeDir()),
+                        filter.getSafeSort()
+                )
+        );
+
+        Specification<Order> spec = Specification.where(null);
+
+        if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
+            String search = filter.getSearch().toLowerCase();
+
+            spec = spec.and(
+                    Specification.where(OrderSpecs.clientEmailLike(search))
+                            .or(OrderSpecs.employeeEmailLike(search))
+            );
+        }
+
+        if (filter.getStatus() != null) {
+            spec = spec.and(OrderSpecs.hasStatus(filter.getStatus()));
+        }
+
+        return orderRepository.findAll(spec, pageable)
+                .map(this::toDto);
     }
+
 
     @Override
     @Transactional

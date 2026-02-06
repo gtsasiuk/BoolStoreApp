@@ -5,7 +5,7 @@ import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
 import com.epam.rd.autocode.spring.project.model.enums.Language;
 import org.springframework.data.jpa.domain.Specification;
 
-public class BookSpecs {
+public final class BookSpecs {
     public static Specification<Book> nameContains(String text) {
         return (root, query, cb) ->
                 cb.like(

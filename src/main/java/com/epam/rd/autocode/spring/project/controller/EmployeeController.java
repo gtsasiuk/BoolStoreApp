@@ -27,13 +27,13 @@ public class EmployeeController {
     }
 
     @PostMapping("/toggle-block")
-    public String blockEmployee(@RequestParam String email) {
+    public String blockEmployee(@ModelAttribute("filter") UserFilterDTO filter, @RequestParam String email) {
         if (email.equals(SecurityContextHolder.getContext()
                 .getAuthentication().getName())) {
             throw new IllegalStateException("You cannot block yourself");
         }
         employeeService.toggleBlockByEmail(email);
-        return "redirect:/employees";
+        return "redirect:/employees?"  + filter.toQueryString();
     }
 
     @GetMapping("/new")

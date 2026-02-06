@@ -1,15 +1,15 @@
 package com.epam.rd.autocode.spring.project.controller;
 
+import com.epam.rd.autocode.spring.project.dto.OrderDTO;
+import com.epam.rd.autocode.spring.project.dto.filter.OrderFilterDTO;
 import com.epam.rd.autocode.spring.project.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/orders")
@@ -24,8 +24,9 @@ public class OrderController {
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping
-    public String ordersPage(Model model) {
-        model.addAttribute("orders", orderService.getAllOrders());
+    public String ordersPage(@ModelAttribute("filter") OrderFilterDTO filter, Model model) {
+        Page<OrderDTO> orders = orderService.getAllOrders(filter);
+        model.addAttribute("orders", orders);
         return "orders/orders_list";
     }
 
@@ -46,9 +47,9 @@ public class OrderController {
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/confirm/{id}")
-    public String orderConfirm(@PathVariable Long id, Authentication auth) {
+    public String orderConfirm(@PathVariable Long id, @ModelAttribute("filter") OrderFilterDTO filter, Authentication auth) {
         orderService.confirmOrder(id, auth.getName());
-        return "redirect:/orders";
+        return "redirect:/orders?" + filter.toQueryString();
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")

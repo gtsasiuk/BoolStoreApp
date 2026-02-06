@@ -97,7 +97,12 @@
             <button type="submit"
                     th:classappend="${employee.blocked} ? 'btn-success' : 'btn-danger'"
                     class="btn btn-sm">
-
+              <input type="hidden" th:field="*{filter.page}">
+              <input type="hidden" th:field="*{filter.size}">
+              <input type="hidden" th:field="*{filter.sort}">
+              <input type="hidden" th:field="*{filter.dir}">
+              <input type="hidden" th:field="*{filter.search}">
+              <input type="hidden" th:field="*{filter.blocked}">
               <span th:text="${employee.blocked} ? 'Unblock' : 'Block'"></span>
             </button>
           </form>
@@ -108,7 +113,7 @@
 
     <nav class="mt-4" th:if="${employees.totalPages > 1}">
       <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${employees.first} ? 'disabled'">
+        <li class="page-item" th:if="${filter.page != 0}" th:classappend="${employees.first} ? 'disabled'">
           <a class="page-link" th:href="@{/employees(page=${employees.number - 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&larr;</a>
         </li>
         <li th:each="i : ${#numbers.sequence(0, employees.totalPages - 1)}"
@@ -116,7 +121,7 @@
           <a class="page-link" th:href="@{/employees(page=${i}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}"
              th:text="${i + 1}"></a>
         </li>
-        <li class="page-item" th:classappend="${employees.last} ? 'disabled'">
+        <li class="page-item" th:if="${filter.page < employees.totalPages - 1}" th:classappend="${employees.last} ? 'disabled'">
           <a class="page-link" th:href="@{/employees(page=${employees.number + 1}, size=${filter.size}, sort=${filter.sort}, dir=${filter.dir}, search=${filter.search}, blocked=${filter.blocked})}">&rarr;</a>
         </li>
 
