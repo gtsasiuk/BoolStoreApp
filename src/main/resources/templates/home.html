@@ -12,11 +12,9 @@
 
 <div class="container my-5">
     <div class="card text-center">
-        <h1>Discover your next favorite book 📖</h1>
-        <p class="mt-2">
-            Browse curated collections, explore new authors and build your personal library.
-        </p>
-        <a href="/books" class="btn btn-primary mt-3">Browse Books</a>
+        <h1 th:text="#{home.title}"></h1>
+        <p class="mt-2" th:text="#{home.subtitle}"></p>
+        <a href="/books" class="btn btn-primary mt-3" th:text="#{button.browse}"></a>
     </div>
 </div>
 
