@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Clients</title>
+  <title th:text="#{page.clients.list.title}">Clients</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -12,59 +12,79 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container my-5">
-  <div class="card">
-    <h2 class="mb-4">Clients List</h2>
+  <div class="card p-4">
 
-    <form method="get" th:action="@{/clients}" th:object="${filter}" class="card mb-4 p-3 shadow-sm">
+    <h2 class="mb-4" th:text="#{clients.title}"></h2>
+
+    <form method="get"
+          th:action="@{/clients}"
+          th:object="${filter}"
+          class="card mb-4 p-3 shadow-sm">
+
       <div class="row g-3 align-items-end">
+
         <div class="col-md-4">
-          <label>Search</label>
-          <input type="text" th:field="*{search}" placeholder="Name or email..." class="form-control">
+          <label th:text="#{clients.search}"></label>
+          <input type="text"
+                 th:field="*{search}"
+                 class="form-control"
+                 th:placeholder="#{clients.search.placeholder}">
         </div>
+
         <div class="col-md-3">
-          <label>Status</label>
+          <label th:text="#{clients.status}"></label>
           <select th:field="*{blocked}" class="form-select">
-            <option value="">All</option>
-            <option value="true">Blocked</option>
-            <option value="false">Active</option>
+            <option value="" th:text="#{clients.status.all}"></option>
+            <option value="true" th:text="#{clients.status.blocked}"></option>
+            <option value="false" th:text="#{clients.status.active}"></option>
           </select>
         </div>
+
         <div class="col-md-3">
-          <label>Sort by</label>
+          <label th:text="#{clients.sort}"></label>
           <select th:field="*{sort}" class="form-select">
-            <option value="name">Name</option>
-            <option value="email">Email</option>
-            <option value="balance">Balance</option>
+            <option value="name" th:text="#{clients.sort.name}"></option>
+            <option value="email" th:text="#{clients.sort.email}"></option>
+            <option value="balance" th:text="#{clients.sort.balance}"></option>
           </select>
         </div>
+
         <div class="col-md-2">
-          <label>Direction</label>
+          <label th:text="#{clients.direction}"></label>
           <select th:field="*{dir}" class="form-select">
-            <option value="asc">↑ Asc</option>
-            <option value="desc">↓ Desc</option>
+            <option value="asc" th:text="#{clients.direction.asc}"></option>
+            <option value="desc" th:text="#{clients.direction.desc}"></option>
           </select>
         </div>
+
         <input type="hidden" th:field="*{page}" value="0">
+
         <div class="col-md-12 text-end mt-2">
-          <button class="btn btn-primary">Apply</button>
-          <a href="/clients" class="btn btn-secondary ms-2">Reset</a>
+          <button class="btn btn-primary"
+                  th:text="#{clients.apply}">
+          </button>
+          <a href="/clients"
+             class="btn btn-secondary ms-2"
+             th:text="#{clients.reset}">
+          </a>
         </div>
       </div>
     </form>
-    <div th:if="${#lists.isEmpty(clients.content)}" class="col-12">
-      <div class="alert alert-warning text-center">
-        No client found for the selected filters.
-      </div>
+
+    <div th:if="${#lists.isEmpty(clients.content)}" class="alert alert-warning text-center">
+      <span th:text="#{clients.empty}"></span>
     </div>
+
     <table class="table table-hover align-middle"
            th:if="${!#lists.isEmpty(clients.content)}">
+
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Balance</th>
-        <th>Status</th>
-        <th>Actions</th>
+        <th th:text="#{clients.table.name}"></th>
+        <th th:text="#{clients.table.email}"></th>
+        <th th:text="#{clients.table.balance}"></th>
+        <th th:text="#{clients.table.status}"></th>
+        <th th:text="#{clients.table.actions}"></th>
       </tr>
       </thead>
 
@@ -75,14 +95,19 @@
         <td>$<span th:text="${client.balance}"></span></td>
 
         <td>
-          <span th:if="${client.blocked}" class="badge bg-danger">Blocked</span>
-          <span th:if="${!client.blocked}" class="badge bg-success">Active</span>
+          <span th:if="${client.blocked}"
+                class="badge bg-danger"
+                th:text="#{clients.status.blocked}">
+          </span>
+          <span th:if="${!client.blocked}"
+                class="badge bg-success"
+                th:text="#{clients.status.active}">
+          </span>
         </td>
 
         <td>
-          <form th:action="@{/clients/toggle-block}"
-                method="post"
-                class="d-inline">
+          <form th:action="@{/clients/toggle-block}" method="post" class="d-inline">
+
             <input type="hidden" th:field="*{filter.page}">
             <input type="hidden" th:field="*{filter.size}">
             <input type="hidden" th:field="*{filter.sort}">
@@ -93,10 +118,10 @@
             <input type="hidden" name="email" th:value="${client.email}"/>
 
             <button type="submit"
-                    th:classappend="${client.blocked} ? 'btn-success' : 'btn-danger'"
-                    class="btn btn-sm">
+                    class="btn btn-sm"
+                    th:classappend="${client.blocked} ? 'btn-success' : 'btn-danger'">
 
-              <span th:text="${client.blocked} ? 'Unblock' : 'Block'"></span>
+              <span th:text="${client.blocked} ? #{clients.unblock} : #{clients.block}"></span>
             </button>
           </form>
         </td>

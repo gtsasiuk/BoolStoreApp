@@ -65,7 +65,7 @@
             <div class="col-md-2" sec:authorize="hasRole('EMPLOYEE')">
                 <label th:text="#{books.status}">Status</label>
                 <select th:field="*{active}" class="form-select">
-                    <option value="" th:text="#{books.reset}">All</option>
+                    <option value="" th:text="#{books.status.all}">All</option>
                     <option value="true" th:text="#{books.active}">Active</option>
                     <option value="false" th:text="#{books.inactive}">Inactive</option>
                 </select>
@@ -91,13 +91,13 @@
             <div class="card h-100 book-card shadow-sm">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title" th:text="${book.name}">Book Name</h5>
-                    <p class="card-text"><strong th:text="#{book.label.genre}">Genre:</strong>
+                    <p class="card-text"><strong th:text="#{book.label.genre} + ':'">Genre:</strong>
                         <span th:text="${book.genre}"></span></p>
-                    <p class="card-text"><strong th:text="#{book.label.author}">Author:</strong>
+                    <p class="card-text"><strong th:text="#{book.label.author} + ':'">Author:</strong>
                         <span th:text="${book.author}"></span></p>
-                    <p class="card-text"><strong th:text="#{book.label.publicationDate}">Publication Date:</strong>
+                    <p class="card-text"><strong th:text="#{book.label.publicationDate} + ':'">Publication Date:</strong>
                         <span th:text="${book.publicationDate}"></span></p>
-                    <p class="card-text"><strong th:text="#{book.label.price}">Price:</strong>
+                    <p class="card-text"><strong th:text="#{book.label.price} + ':'">Price:</strong>
                         $<span th:text="${book.price}"></span></p>
                     <p class="card-text text-truncate" th:text="${book.description}"></p>
 

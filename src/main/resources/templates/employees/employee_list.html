@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Clients</title>
+  <title th:text="#{page.employees.list.title}">Employees</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -12,66 +12,86 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container my-5">
-  <div class="card">
-    <h2 class="mb-4">Employees List</h2>
+  <div class="card p-4">
 
-    <a th:href="@{/employees/new}" class="btn btn-primary mb-3">
-      + Add employee
+    <h2 class="mb-4" th:text="#{employees.title}"></h2>
+
+    <a th:href="@{/employees/new}"
+       class="btn btn-primary mb-3"
+       th:text="#{employees.add}">
     </a>
 
-    <form method="get" th:action="@{/employees}" th:object="${filter}" class="card mb-4 p-3 shadow-sm">
+    <form method="get"
+          th:action="@{/employees}"
+          th:object="${filter}"
+          class="card mb-4 p-3 shadow-sm">
+
       <div class="row g-3 align-items-end">
+
         <div class="col-md-4">
-          <label>Search</label>
-          <input type="text" th:field="*{search}" placeholder="Name or email..." class="form-control">
+          <label th:text="#{employees.search}"></label>
+          <input type="text"
+                 th:field="*{search}"
+                 class="form-control"
+                 th:placeholder="#{employees.search.placeholder}">
         </div>
+
         <div class="col-md-3">
-          <label>Status</label>
+          <label th:text="#{employees.status}"></label>
           <select th:field="*{blocked}" class="form-select">
-            <option value="">All</option>
-            <option value="true">Blocked</option>
-            <option value="false">Active</option>
+            <option value="" th:text="#{employees.status.all}"></option>
+            <option value="true" th:text="#{employees.status.blocked}"></option>
+            <option value="false" th:text="#{employees.status.active}"></option>
           </select>
         </div>
+
         <div class="col-md-3">
-          <label>Sort by</label>
+          <label th:text="#{employees.sort}"></label>
           <select th:field="*{sort}" class="form-select">
-            <option value="name">Name</option>
-            <option value="email">Email</option>
-            <option value="phone">Phone</option>
-            <option value="birthDate">Birth Date</option>
+            <option value="name" th:text="#{employees.sort.name}"></option>
+            <option value="email" th:text="#{employees.sort.email}"></option>
+            <option value="phone" th:text="#{employees.sort.phone}"></option>
+            <option value="birthDate" th:text="#{employees.sort.birthDate}"></option>
           </select>
         </div>
+
         <div class="col-md-2">
-          <label>Direction</label>
+          <label th:text="#{employees.direction}"></label>
           <select th:field="*{dir}" class="form-select">
-            <option value="asc">↑ Asc</option>
-            <option value="desc">↓ Desc</option>
+            <option value="asc" th:text="#{employees.direction.asc}"></option>
+            <option value="desc" th:text="#{employees.direction.desc}"></option>
           </select>
         </div>
+
         <input type="hidden" th:field="*{page}" value="0">
+
         <div class="col-md-12 text-end mt-2">
-          <button class="btn btn-primary">Apply</button>
-          <a href="/employees" class="btn btn-secondary ms-2">Reset</a>
+          <button class="btn btn-primary" th:text="#{employees.apply}"></button>
+          <a href="/employees"
+             class="btn btn-secondary ms-2"
+             th:text="#{employees.reset}">
+          </a>
         </div>
+
       </div>
     </form>
 
-    <div th:if="${#lists.isEmpty(employees.content)}" class="col-12">
-      <div class="alert alert-warning text-center">
-        No employees found for the selected filters.
-      </div>
+    <div th:if="${#lists.isEmpty(employees.content)}"
+         class="alert alert-warning text-center"
+         th:text="#{employees.empty}">
     </div>
+
     <table class="table table-hover align-middle"
            th:if="${!#lists.isEmpty(employees.content)}">
+
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Birth Date</th>
-        <th>Status</th>
-        <th>Actions</th>
+        <th th:text="#{employees.table.name}"></th>
+        <th th:text="#{employees.table.email}"></th>
+        <th th:text="#{employees.table.phone}"></th>
+        <th th:text="#{employees.table.birthDate}"></th>
+        <th th:text="#{employees.table.status}"></th>
+        <th th:text="#{employees.table.actions}"></th>
       </tr>
       </thead>
 
@@ -79,12 +99,18 @@
       <tr th:each="employee : ${employees}">
         <td th:text="${employee.name}"></td>
         <td th:text="${employee.email}"></td>
-        <td><span th:text="${employee.phone}"></span></td>
-        <td><span th:text="${employee.birthDate}"></span></td>
+        <td th:text="${employee.phone}"></td>
+        <td th:text="${employee.birthDate}"></td>
 
         <td>
-          <span th:if="${employee.blocked}" class="badge bg-danger">Blocked</span>
-          <span th:if="${!employee.blocked}" class="badge bg-success">Active</span>
+          <span th:if="${employee.blocked}"
+                class="badge bg-danger"
+                th:text="#{employees.status.blocked}">
+          </span>
+          <span th:if="${!employee.blocked}"
+                class="badge bg-success"
+                th:text="#{employees.status.active}">
+          </span>
         </td>
 
         <td>
@@ -94,16 +120,17 @@
 
             <input type="hidden" name="email" th:value="${employee.email}"/>
 
+            <input type="hidden" th:field="*{filter.page}">
+            <input type="hidden" th:field="*{filter.size}">
+            <input type="hidden" th:field="*{filter.sort}">
+            <input type="hidden" th:field="*{filter.dir}">
+            <input type="hidden" th:field="*{filter.search}">
+            <input type="hidden" th:field="*{filter.blocked}">
+
             <button type="submit"
-                    th:classappend="${employee.blocked} ? 'btn-success' : 'btn-danger'"
-                    class="btn btn-sm">
-              <input type="hidden" th:field="*{filter.page}">
-              <input type="hidden" th:field="*{filter.size}">
-              <input type="hidden" th:field="*{filter.sort}">
-              <input type="hidden" th:field="*{filter.dir}">
-              <input type="hidden" th:field="*{filter.search}">
-              <input type="hidden" th:field="*{filter.blocked}">
-              <span th:text="${employee.blocked} ? 'Unblock' : 'Block'"></span>
+                    class="btn btn-sm"
+                    th:classappend="${employee.blocked} ? 'btn-success' : 'btn-danger'">
+              <span th:text="${employee.blocked} ? #{employees.unblock} : #{employees.block}"></span>
             </button>
           </form>
         </td>
