@@ -1,5 +1,7 @@
 package com.epam.rd.autocode.spring.project.conf;
 
+import com.epam.rd.autocode.spring.project.security.CustomAccessDeniedHandler;
+import com.epam.rd.autocode.spring.project.security.CustomAuthEntryPoint;
 import com.epam.rd.autocode.spring.project.security.CustomUserDetailsService;
 import com.epam.rd.autocode.spring.project.security.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthEntryPoint authEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +41,8 @@ public class SecurityConfig {
                                 "/auth/register",
                                 "/books/**",
                                 "/css/**",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/errors/**"
                         ).permitAll()
                         .requestMatchers("/profile/**", "/profile/delete/**", "/orders/**").hasAnyRole("EMPLOYEE", "CUSTOMER")
                         .requestMatchers("/cart/**", "/orders/my/**", "/orders/success/**").hasRole("CUSTOMER")
@@ -48,9 +53,13 @@ public class SecurityConfig {
                                 "/books/edit/**",
                                 "/books/delete/**"
                         ).hasRole("EMPLOYEE")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .userDetailsService(customUserDetailsService)
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authEntryPoint)
+                )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
