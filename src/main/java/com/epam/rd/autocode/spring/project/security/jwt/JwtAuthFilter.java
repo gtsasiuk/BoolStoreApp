@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -34,9 +36,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
+        if (token != null) {
+            log.debug("JWT token found");
+        }
+
         if (token != null && jwtUtil.validate(token)) {
             try {
                 String email = jwtUtil.extractEmail(token);
+                log.debug("JWT validated for email={}", email);
                 var userDetails = userDetailsService.loadUserByUsername(email);
 
                 if (!userDetails.isEnabled()) {
@@ -58,6 +65,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
             } catch (Exception ex) {
+                log.warn("Invalid JWT token, clearing security context");
                 clearJwtCookie(response);
                 SecurityContextHolder.clearContext();
             }

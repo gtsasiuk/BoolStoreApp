@@ -6,6 +6,7 @@ import com.epam.rd.autocode.spring.project.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Controller
 @RequestMapping("/profile")
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class ProfileController {
     public String profilePage(Model model, Authentication auth,
                               @RequestParam(value = "edit", required = false) Boolean edit) {
         String email = auth.getName();
+        log.info("Opening profile page for email={}", email);
 
         if (hasRole(auth, "ROLE_EMPLOYEE")) {
             var e = employeeService.getEmployeeByEmail(email);
@@ -54,24 +57,20 @@ public class ProfileController {
 
 
     @PostMapping
-    public String updateProfile(
-            Authentication auth,
-            Model model,
-
-            @Valid @ModelAttribute(value = "employeeForm")
-            EmployeeProfileUpdateDTO employeeForm,
+    public String updateProfile(Authentication auth, Model model,
+            @Valid @ModelAttribute(value = "employeeForm") EmployeeProfileUpdateDTO employeeForm,
             BindingResult employeeErrors,
-
-            @Valid @ModelAttribute(value = "clientForm")
-            ClientProfileUpdateDTO clientForm,
+            @Valid @ModelAttribute(value = "clientForm") ClientProfileUpdateDTO clientForm,
             BindingResult clientErrors
     ) {
         String email = auth.getName();
+        log.info("Profile update attempt for email={}", email);
 
         if (hasRole(auth, "ROLE_EMPLOYEE")) {
             var e = employeeService.getEmployeeByEmail(email);
 
             if (employeeErrors.hasErrors()) {
+                log.warn("Employee profile update validation failed for email={}", email);
                 model.addAttribute("user", new UserProfileViewDTO(
                         e.getName(), e.getEmail(), null,
                         e.getPhone(), e.getBirthDate(), e.getBlocked()
@@ -85,8 +84,7 @@ public class ProfileController {
             employeeService.updateEmployeeByEmail(
                     email,
                     new EmployeeDTO(
-                            e.getEmail(),
-                            e.getPassword(),
+                            e.getEmail(), e.getPassword(),
                             employeeForm.getName(),
                             employeeForm.getPhone(),
                             employeeForm.getBirthDate(),
@@ -98,6 +96,7 @@ public class ProfileController {
             var c = clientService.getClientByEmail(email);
 
             if (clientErrors.hasErrors()) {
+                log.warn("Client profile update validation failed for email={}", email);
                 model.addAttribute("user", new UserProfileViewDTO(
                         c.getName(), c.getEmail(), c.getBalance(),
                         null, null, c.getBlocked()
@@ -117,12 +116,15 @@ public class ProfileController {
                     )
             );
         }
+        log.info("Profile updated successfully for email={}", email);
         return "redirect:/profile";
     }
 
     @PostMapping("/delete")
     public String deleteProfile(Authentication auth) {
-        clientService.deleteClientByEmail(auth.getName());
+        String email = auth.getName();
+        log.warn("Profile deletion requested for email={}", email);
+        clientService.deleteClientByEmail(email);
         SecurityContextHolder.clearContext();
         return "redirect:/logout";
     }
