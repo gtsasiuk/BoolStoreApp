@@ -1,4 +1,4 @@
-package com.epam.rd.autocode.spring.project.dto.user;
+package com.epam.rd.autocode.spring.project.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

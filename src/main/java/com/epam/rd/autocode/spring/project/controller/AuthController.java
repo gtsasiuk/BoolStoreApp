@@ -1,6 +1,6 @@
 package com.epam.rd.autocode.spring.project.controller;
 
-import com.epam.rd.autocode.spring.project.dto.user.ClientDTO;
+import com.epam.rd.autocode.spring.project.dto.ClientDTO;
 import com.epam.rd.autocode.spring.project.dto.auth.LoginRequestDTO;
 import com.epam.rd.autocode.spring.project.dto.auth.RegisterRequestDTO;
 import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
