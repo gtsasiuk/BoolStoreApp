@@ -8,10 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginRequestDTO {
-    @Email
-    @NotBlank
+    @Email(message = "{validation.email}")
+    @NotBlank(message = "{validation.required}")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "{validation.required}")
     private String password;
 }
