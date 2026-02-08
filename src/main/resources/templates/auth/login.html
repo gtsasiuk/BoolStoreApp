@@ -15,7 +15,7 @@
   <div class="card form-card p-4">
     <h2 class="mb-4" th:text="#{login.title}">Login</h2>
 
-    <form method="post" action="/auth/login">
+    <form method="post" th:object="${loginForm}" th:action="@{/auth/login}">
       <div class="mb-3">
         <label th:text="#{login.email}">Email</label>
         <input type="email"
@@ -33,7 +33,11 @@
                class="form-control"
                th:placeholder="#{login.password}">
       </div>
-
+      <div class="form-error" th:if="${#fields.hasGlobalErrors()}">
+        <ul class="mb-0">
+          <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+        </ul>
+      </div>
       <button type="submit"
               class="btn btn-primary"
               th:text="#{button.login}">

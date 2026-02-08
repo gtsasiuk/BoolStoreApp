@@ -1,6 +1,8 @@
 package com.epam.rd.autocode.spring.project.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -15,10 +17,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserProfileUpdateDTO {
-    @NotBlank
+    @NotBlank(message = "{validation.required}")
     private String name;
+
+    @PositiveOrZero(message = "{validation.balance}")
     private BigDecimal balance;
+
+    @Pattern(
+            regexp = "^\\d{3}-\\d{3}-\\d{4}$",
+            message = "{validation.phone}"
+    )
     private String phone;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthDate;
 

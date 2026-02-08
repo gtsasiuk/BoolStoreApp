@@ -15,32 +15,38 @@
     <div class="card form-card p-4">
         <h2 class="mb-4" th:text="#{register.title}">Create account</h2>
 
-        <form method="post" action="/auth/register">
+        <form method="post" th:object="${registerForm}" th:action="@{/auth/register}">
             <div class="mb-3">
                 <label th:text="#{register.name}">Name</label>
                 <input type="text"
                        name="name"
+                       th:field="*{name}"
                        required
                        class="form-control"
                        th:placeholder="#{register.name}">
+                <div class="field-error" th:errors="*{name}"></div>
             </div>
 
             <div class="mb-3">
                 <label th:text="#{register.email}">Email</label>
                 <input type="email"
                        name="email"
+                       th:field="*{email}"
                        required
                        class="form-control"
                        th:placeholder="#{register.email}">
+                <div class="field-error" th:errors="*{email}"></div>
             </div>
 
             <div class="mb-3">
                 <label th:text="#{register.password}">Password</label>
                 <input type="password"
                        name="password"
+                       th:field="*{password}"
                        required
                        class="form-control"
                        th:placeholder="#{register.password}">
+                <div class="field-error" th:errors="*{password}"></div>
             </div>
 
             <button type="submit"
