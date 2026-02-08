@@ -1,8 +1,6 @@
 package com.epam.rd.autocode.spring.project.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -16,27 +14,19 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileUpdateDTO {
+public class EmployeeProfileUpdateDTO {
     @NotBlank(message = "{validation.required}")
+    @Size(min = 3, message = "{validation.name}")
     private String name;
-
-    @PositiveOrZero(message = "{validation.balance}")
-    private BigDecimal balance;
 
     @Pattern(
             regexp = "^\\d{3}-\\d{3}-\\d{4}$",
             message = "{validation.phone}"
     )
+    @NotBlank(message = "{validation.required}")
     private String phone;
 
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthDate;
-
-    public EmployeeDTO toEmployeeDTO() {
-        return new EmployeeDTO(null, null, name, phone, birthDate, null);
-    }
-
-    public ClientDTO toClientDTO() {
-        return new ClientDTO(null, null, name, balance, null);
-    }
 }

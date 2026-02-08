@@ -1,7 +1,6 @@
 package com.epam.rd.autocode.spring.project.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,15 +13,25 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeDTO {
-    @NotBlank
+    @Email(message = "{validation.email}")
+    @NotBlank(message = "{validation.required}")
     private String email;
-    @NotBlank
+
+    @NotBlank(message = "{validation.required}")
+    @Pattern(
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$",
+            message = "{validation.password}"
+    )
     private String password;
-    @NotBlank
+    @NotBlank(message = "{validation.required}")
+    @Size(min = 3, message = "{validation.name}")
     private String name;
-    @NotBlank
+    @Pattern(
+            regexp = "^\\d{3}-\\d{3}-\\d{4}$",
+            message = "{validation.phone}"
+    )
     private String phone;
-    @NotNull
+    @NotNull(message = "{validation.required}")
     private LocalDate birthDate;
     private Boolean blocked;
 }

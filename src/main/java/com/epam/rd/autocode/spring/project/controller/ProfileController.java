@@ -1,19 +1,17 @@
 package com.epam.rd.autocode.spring.project.controller;
 
-import com.epam.rd.autocode.spring.project.dto.UserProfileUpdateDTO;
-import com.epam.rd.autocode.spring.project.dto.UserProfileViewDTO;
+import com.epam.rd.autocode.spring.project.dto.*;
 import com.epam.rd.autocode.spring.project.service.ClientService;
 import com.epam.rd.autocode.spring.project.service.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/profile")
@@ -28,38 +26,97 @@ public class ProfileController {
     }
 
     @GetMapping
-    public String profilePage(Model model, Authentication authentication,
+    public String profilePage(Model model, Authentication auth,
                               @RequestParam(value = "edit", required = false) Boolean edit) {
-        String email = authentication.getName();
-        UserProfileViewDTO profile;
-        UserProfileUpdateDTO update;
+        String email = auth.getName();
 
-        if (hasRole(authentication,"ROLE_EMPLOYEE")) {
+        if (hasRole(auth, "ROLE_EMPLOYEE")) {
             var e = employeeService.getEmployeeByEmail(email);
-            profile = new UserProfileViewDTO(e.getName(), e.getEmail(), null, e.getPhone(), e.getBirthDate(), e.getBlocked());
-            update = new UserProfileUpdateDTO(e.getName(), null, e.getPhone(), e.getBirthDate());
+            model.addAttribute("user", new UserProfileViewDTO(
+                    e.getName(), e.getEmail(), null,
+                    e.getPhone(), e.getBirthDate(), e.getBlocked()
+            ));
+            model.addAttribute("employeeForm",
+                    new EmployeeProfileUpdateDTO(e.getName(), e.getPhone(), e.getBirthDate()));
         } else {
             var c = clientService.getClientByEmail(email);
-            profile = new UserProfileViewDTO(c.getName(), c.getEmail(), c.getBalance(), null, null, c.getBlocked());
-            update = new UserProfileUpdateDTO(c.getName(), c.getBalance(), null, null);
+            model.addAttribute("user", new UserProfileViewDTO(
+                    c.getName(), c.getEmail(), c.getBalance(),
+                    null, null, c.getBlocked()
+            ));
+            model.addAttribute("clientForm",
+                    new ClientProfileUpdateDTO(c.getName(), c.getBalance()));
         }
 
-        model.addAttribute("user", profile);
-        model.addAttribute("userUpdate", update);
-        model.addAttribute("edit", edit != null && edit);
+        model.addAttribute("edit", Boolean.TRUE.equals(edit));
         return "profile";
     }
 
+
     @PostMapping
-    public String updateProfile(UserProfileUpdateDTO form, Authentication authentication) {
-        String email = authentication.getName();
+    public String updateProfile(
+            Authentication auth,
+            Model model,
 
-        if (hasRole(authentication,"ROLE_EMPLOYEE")) {
-            employeeService.updateEmployeeByEmail(email, form.toEmployeeDTO());
+            @Valid @ModelAttribute(value = "employeeForm")
+            EmployeeProfileUpdateDTO employeeForm,
+            BindingResult employeeErrors,
+
+            @Valid @ModelAttribute(value = "clientForm")
+            ClientProfileUpdateDTO clientForm,
+            BindingResult clientErrors
+    ) {
+        String email = auth.getName();
+
+        if (hasRole(auth, "ROLE_EMPLOYEE")) {
+            var e = employeeService.getEmployeeByEmail(email);
+
+            if (employeeErrors.hasErrors()) {
+                model.addAttribute("user", new UserProfileViewDTO(
+                        e.getName(), e.getEmail(), null,
+                        e.getPhone(), e.getBirthDate(), e.getBlocked()
+                ));
+                model.addAttribute("employeeForm", employeeForm);
+                model.addAttribute("clientForm", null);
+                model.addAttribute("edit", true);
+                return "profile";
+            }
+
+            employeeService.updateEmployeeByEmail(
+                    email,
+                    new EmployeeDTO(
+                            e.getEmail(),
+                            e.getPassword(),
+                            employeeForm.getName(),
+                            employeeForm.getPhone(),
+                            employeeForm.getBirthDate(),
+                            e.getBlocked()
+                    )
+            );
+
         } else {
-            clientService.updateClientByEmail(email, form.toClientDTO());
-        }
+            var c = clientService.getClientByEmail(email);
 
+            if (clientErrors.hasErrors()) {
+                model.addAttribute("user", new UserProfileViewDTO(
+                        c.getName(), c.getEmail(), c.getBalance(),
+                        null, null, c.getBlocked()
+                ));
+                model.addAttribute("clientForm", clientForm);
+                model.addAttribute("employeeForm", null);
+                model.addAttribute("edit", true);
+                return "profile";
+            }
+            clientService.updateClientByEmail(
+                    email,
+                    new ClientDTO(
+                            null, null,
+                            clientForm.getName(),
+                            clientForm.getBalance(),
+                            null
+                    )
+            );
+        }
         return "redirect:/profile";
     }
 
