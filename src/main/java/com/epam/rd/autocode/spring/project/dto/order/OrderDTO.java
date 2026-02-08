@@ -2,6 +2,7 @@ package com.epam.rd.autocode.spring.project.dto.order;
 
 import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,9 @@ import java.util.List;
 public class OrderDTO {
     private Long id;
     @NotBlank
+    @Email
     private String clientEmail;
+    @Email
     private String employeeEmail;
     @NotNull
     private LocalDateTime orderDate;

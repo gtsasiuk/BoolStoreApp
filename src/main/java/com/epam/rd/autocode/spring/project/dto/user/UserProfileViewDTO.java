@@ -16,10 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserProfileViewDTO {
-    @NotBlank
     private String name;
-    @Email
-    @NotBlank
     private String email;
     private BigDecimal balance;
     private String phone;

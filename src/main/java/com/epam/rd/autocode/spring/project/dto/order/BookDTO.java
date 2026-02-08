@@ -29,6 +29,7 @@ public class BookDTO {
     private String author;
 
     @NotBlank(message = "{validation.required}")
+    @Size(min = 3, message = "{validation.genre}")
     private String genre;
 
     @NotNull(message = "{validation.required}")

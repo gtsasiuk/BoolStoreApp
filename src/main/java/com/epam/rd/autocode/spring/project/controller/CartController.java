@@ -1,5 +1,7 @@
 package com.epam.rd.autocode.spring.project.controller;
 
+import com.epam.rd.autocode.spring.project.dto.order.BookDTO;
+import com.epam.rd.autocode.spring.project.dto.order.BookItemDTO;
 import com.epam.rd.autocode.spring.project.dto.order.CartDTO;
 import com.epam.rd.autocode.spring.project.dto.order.OrderDTO;
 import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
@@ -31,6 +33,10 @@ public class CartController {
     @PostMapping("/add")
     public String addToCart(@RequestParam String bookName,
                             @ModelAttribute("cart") CartDTO cart) {
+        BookDTO book = bookService.getBookByName(bookName);
+        if (book == null || Boolean.FALSE.equals(book.getActive())) {
+            throw new IllegalArgumentException("Book is not available");
+        }
         cart.addBook(bookName);
         return "redirect:/cart";
     }
@@ -45,6 +51,10 @@ public class CartController {
     public String updateQuantity(@RequestParam String bookName,
                                  @RequestParam Integer quantity,
                                  @ModelAttribute("cart") CartDTO cart) {
+
+        if (bookName == null || bookName.isBlank()) {
+            throw new IllegalArgumentException("Book name is required");
+        }
 
         if (quantity <= 0) {
             cart.removeBook(bookName);
@@ -70,6 +80,18 @@ public class CartController {
 
         if (cart.isEmpty()) {
             return "redirect:/cart";
+        }
+
+        for (BookItemDTO item : cart.getItems()) {
+            BookDTO book = bookService.getBookByName(item.getBookName());
+
+            if (book == null || Boolean.FALSE.equals(book.getActive())) {
+                throw new IllegalArgumentException("Book " + item.getBookName() + " is not available");
+            }
+
+            if (item.getQuantity() == null || item.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Invalid quantity for " + item.getBookName());
+            }
         }
 
         OrderDTO order = new OrderDTO();
