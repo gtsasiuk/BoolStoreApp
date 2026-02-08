@@ -17,70 +17,85 @@
           th:object="${book}"
           method="post">
       <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.name}">Book Name</label>
+        <label th:text="#{book.label.name}">Book Name</label>
         <input type="text"
                th:field="*{name}"
                class="form-control"
+               th:placeholder="#{book.placeholder.name}"
                readonly
-               th:placeholder="#{book.placeholder.name}">
+               required>
+        <div class="field-error" th:errors="*{name}"></div>
       </div>
+
       <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.author}">Author</label>
+        <label th:text="#{book.label.author}">Author</label>
         <input type="text"
                th:field="*{author}"
                class="form-control"
-               required
-               th:placeholder="#{book.placeholder.author}">
+               th:placeholder="#{book.placeholder.author}"
+               required>
+        <div class="field-error" th:errors="*{author}"></div>
       </div>
+
       <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.genre}">Genre</label>
+        <label th:text="#{book.label.genre}">Genre</label>
         <input type="text"
                th:field="*{genre}"
                class="form-control"
-               required
                th:placeholder="#{book.placeholder.genre}">
+        <div class="field-error" th:errors="*{genre}"></div>
       </div>
+
       <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.ageGroup}">Age Group</label>
+        <label th:text="#{book.label.ageGroup}">Age Group</label>
         <select th:field="*{ageGroup}" class="form-select" required>
           <option value="" th:text="#{books.select.ageGroup}">Select Age Group</option>
           <option th:each="ag : ${T(com.epam.rd.autocode.spring.project.model.enums.AgeGroup).values()}"
                   th:value="${ag}"
                   th:text="${ag}">
           </option>
+          <div class="field-error" th:errors="*{ageGroup}"></div>
         </select>
       </div>
+
       <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.language}">Language</label>
+        <label th:text="#{book.label.language}">Language</label>
         <select th:field="*{language}" class="form-select" required>
           <option value="" th:text="#{books.select.language}">Select Language</option>
           <option th:each="lang : ${T(com.epam.rd.autocode.spring.project.model.enums.Language).values()}"
                   th:value="${lang}"
                   th:text="${lang}">
           </option>
+          <div class="field-error" th:errors="*{language}"></div>
         </select>
       </div>
+
       <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.price}">Price</label>
-        <input type="number"
-               step="0.01"
-               th:field="*{price}"
-               class="form-control"
-               required
-               th:placeholder="#{book.placeholder.price}">
-      </div>
-      <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.publicationDate}">Publication Date</label>
-        <input type="date"
-               th:field="*{publicationDate}"
-               class="form-control">
-      </div>
-      <div class="mb-3">
-        <label class="form-label" th:text="#{book.label.pages}">Pages</label>
+        <label th:text="#{book.label.pages}">Pages</label>
         <input type="number"
                th:field="*{pages}"
                class="form-control"
                th:placeholder="#{book.placeholder.pages}">
+        <div class="field-error" th:errors="*{pages}"></div>
+      </div>
+
+      <div class="mb-3">
+        <label th:text="#{book.label.price}">Price</label>
+        <input type="number"
+               step="0.01"
+               th:field="*{price}"
+               class="form-control"
+               th:placeholder="#{book.placeholder.price}"
+               required>
+        <div class="field-error" th:errors="*{price}"></div>
+      </div>
+
+      <div class="mb-3">
+        <label th:text="#{book.label.publicationDate}">Publication Date</label>
+        <input type="date"
+               th:field="*{publicationDate}"
+               class="form-control">
+        <div class="field-error" th:errors="*{publicationDate}"></div>
       </div>
       <div class="mb-3">
         <label class="form-label" th:text="#{book.label.characteristics}">Characteristics</label>

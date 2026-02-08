@@ -2,6 +2,7 @@ package com.epam.rd.autocode.spring.project.controller;
 
 import com.epam.rd.autocode.spring.project.dto.order.BookDTO;
 import com.epam.rd.autocode.spring.project.dto.filter.BookFilterDTO;
+import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
 import com.epam.rd.autocode.spring.project.model.enums.AgeGroup;
 import com.epam.rd.autocode.spring.project.model.enums.Language;
 import com.epam.rd.autocode.spring.project.service.BookService;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -53,21 +55,41 @@ public class BookController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("book", new BookDTO());
+        if (!model.containsAttribute("book")) {
+            model.addAttribute("book", new BookDTO());
+        }
+        model.addAttribute("ageGroups", AgeGroup.values());
+        model.addAttribute("languages", Language.values());
         return "books/book_add";
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/add")
-    public String add(@Valid @ModelAttribute BookDTO dto) {
-        bookService.addBook(dto);
+    public String add(@Valid @ModelAttribute("book") BookDTO dto,
+                      BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("ageGroups", AgeGroup.values());
+            model.addAttribute("languages", Language.values());
+            return "books/book_add";
+        }
+
+        try {
+            bookService.addBook(dto);
+        }
+        catch (AlreadyExistException ex) {
+            result.rejectValue("name", "book.alreadyExist", "Book with this name already exists");
+            return "books/book_add";
+        }
         return "redirect:/books";
     }
+
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/edit/{name}")
     public String editForm(@PathVariable String name, Model model) {
-        model.addAttribute("book", bookService.getBookByName(name));
+        if (!model.containsAttribute("book")) {
+            model.addAttribute("book", bookService.getBookByName(name));
+        }
         model.addAttribute("ageGroups", AgeGroup.values());
         model.addAttribute("languages", Language.values());
         return "books/book_edit";
@@ -75,10 +97,18 @@ public class BookController {
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/edit/{name}")
-    public String edit(@PathVariable String name, BookDTO dto, Model model) {
-        model.addAttribute("book", bookService.updateBookByName(name, dto));
+    public String edit(@PathVariable String name, @Valid @ModelAttribute("book") BookDTO dto,
+                       BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("ageGroups", AgeGroup.values());
+            model.addAttribute("languages", Language.values());
+            return "books/book_edit";
+        }
+
+        bookService.updateBookByName(name, dto);
         return "redirect:/books/{name}";
     }
+
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/toggle-active/{name}")

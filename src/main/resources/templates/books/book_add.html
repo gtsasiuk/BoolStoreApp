@@ -22,6 +22,7 @@
                class="form-control"
                th:placeholder="#{book.placeholder.name}"
                required>
+        <div class="field-error" th:errors="*{name}"></div>
       </div>
 
       <div class="mb-3">
@@ -31,6 +32,7 @@
                class="form-control"
                th:placeholder="#{book.placeholder.author}"
                required>
+        <div class="field-error" th:errors="*{author}"></div>
       </div>
 
       <div class="mb-3">
@@ -39,6 +41,7 @@
                th:field="*{genre}"
                class="form-control"
                th:placeholder="#{book.placeholder.genre}">
+        <div class="field-error" th:errors="*{genre}"></div>
       </div>
 
       <div class="mb-3">
@@ -49,6 +52,7 @@
                   th:value="${ag}"
                   th:text="${ag}">
           </option>
+          <div class="field-error" th:errors="*{ageGroup}"></div>
         </select>
       </div>
 
@@ -60,6 +64,7 @@
                   th:value="${lang}"
                   th:text="${lang}">
           </option>
+          <div class="field-error" th:errors="*{language}"></div>
         </select>
       </div>
 
@@ -69,6 +74,7 @@
                th:field="*{pages}"
                class="form-control"
                th:placeholder="#{book.placeholder.pages}">
+        <div class="field-error" th:errors="*{pages}"></div>
       </div>
 
       <div class="mb-3">
@@ -79,6 +85,7 @@
                class="form-control"
                th:placeholder="#{book.placeholder.price}"
                required>
+        <div class="field-error" th:errors="*{price}"></div>
       </div>
 
       <div class="mb-3">
@@ -86,6 +93,7 @@
         <input type="date"
                th:field="*{publicationDate}"
                class="form-control">
+        <div class="field-error" th:errors="*{publicationDate}"></div>
       </div>
 
       <div class="mb-3">
