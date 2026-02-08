@@ -8,6 +8,7 @@ import com.epam.rd.autocode.spring.project.model.enums.OrderStatus;
 import com.epam.rd.autocode.spring.project.service.BookService;
 import com.epam.rd.autocode.spring.project.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Controller
 @RequestMapping("/cart")
 @SessionAttributes("cart")
@@ -33,8 +35,10 @@ public class CartController {
     @PostMapping("/add")
     public String addToCart(@RequestParam String bookName,
                             @ModelAttribute("cart") CartDTO cart) {
+        log.info("Add book to cart book={}", bookName);
         BookDTO book = bookService.getBookByName(bookName);
         if (book == null || Boolean.FALSE.equals(book.getActive())) {
+            log.warn("Attempt to add inactive or missing book {}", bookName);
             throw new IllegalArgumentException("Book is not available");
         }
         cart.addBook(bookName);
@@ -43,6 +47,7 @@ public class CartController {
 
     @GetMapping
     public String cartPage(@ModelAttribute("cart") CartDTO cart, Model model) {
+        log.info("Cart page opened itemsCount={}", cart.getItems().size());
         model.addAttribute("cart", cart);
         return "cart/cart";
     }
@@ -51,6 +56,7 @@ public class CartController {
     public String updateQuantity(@RequestParam String bookName,
                                  @RequestParam Integer quantity,
                                  @ModelAttribute("cart") CartDTO cart) {
+        log.info("Update cart quantity book={} qty={}", bookName, quantity);
 
         if (bookName == null || bookName.isBlank()) {
             throw new IllegalArgumentException("Book name is required");
@@ -68,6 +74,7 @@ public class CartController {
     @PostMapping("/remove")
     public String remove(@RequestParam String bookName,
                          @ModelAttribute("cart") CartDTO cart) {
+        log.warn("Remove book from cart book={}", bookName);
         cart.removeBook(bookName);
         return "redirect:/cart";
     }
@@ -77,8 +84,10 @@ public class CartController {
     public String checkout(@ModelAttribute("cart") CartDTO cart,
                            Authentication auth,
                            SessionStatus status) {
+        log.info("Checkout started client={}", auth.getName());
 
         if (cart.isEmpty()) {
+            log.warn("Checkout attempted with empty cart");
             return "redirect:/cart";
         }
 
@@ -86,6 +95,7 @@ public class CartController {
             BookDTO book = bookService.getBookByName(item.getBookName());
 
             if (book == null || Boolean.FALSE.equals(book.getActive())) {
+                log.warn("Checkout failed inactive book {}", item.getBookName());
                 throw new IllegalArgumentException("Book " + item.getBookName() + " is not available");
             }
 
@@ -105,6 +115,7 @@ public class CartController {
         orderService.addOrder(order);
 
         status.setComplete();
+        log.info("Checkout completed client={}", auth.getName());
         return "redirect:/orders/success";
     }
 }

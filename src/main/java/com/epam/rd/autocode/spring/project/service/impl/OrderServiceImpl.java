@@ -14,6 +14,7 @@ import com.epam.rd.autocode.spring.project.service.ClientService;
 import com.epam.rd.autocode.spring.project.service.OrderService;
 import com.epam.rd.autocode.spring.project.specification.OrderSpecs;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -63,12 +65,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDTO addOrder(OrderDTO order) {
+        log.info(
+                "Creating order client={} itemsCount={}",
+                order.getClientEmail(),
+                order.getBookItems() != null ? order.getBookItems().size() : 0
+        );
+
         Client client = clientRepository.findByEmail(order.getClientEmail())
-                .orElseThrow(() -> new NotFoundException("Client not found"));
+                .orElseThrow(() -> {
+                    log.warn("Client not found email={}", order.getClientEmail());
+                    return new NotFoundException("Client not found");
+                });
         Employee employee = null;
         if (order.getEmployeeEmail() != null) {
             employee = employeeRepository.findByEmail(order.getEmployeeEmail())
-                    .orElseThrow(() -> new NotFoundException("Employee not found"));
+                    .orElseThrow(() -> {
+                        log.warn("Employee not found email={}", order.getEmployeeEmail());
+                        return  new NotFoundException("Employee not found");
+                    });
         }
 
         Order newOrder = new Order();
@@ -79,7 +93,10 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal total = order.getBookItems().stream()
                 .map(itemDTO -> {
                     Book book = bookRepository.findByName(itemDTO.getBookName())
-                            .orElseThrow(() -> new NotFoundException("Book not found"));
+                            .orElseThrow(() -> {
+                                log.warn("Book not found name={}", itemDTO.getBookName());
+                                return new NotFoundException("Book not found: " + itemDTO.getBookName());
+                            });
 
                     return book.getPrice()
                             .multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
@@ -91,7 +108,10 @@ public class OrderServiceImpl implements OrderService {
                 .map(itemDTO -> {
                     Book book = bookRepository.findByName(itemDTO.getBookName())
                             .orElseThrow(() ->
-                                    new NotFoundException("Book not found: " + itemDTO.getBookName()));
+                            {
+                               log.warn("Book not found name={}", itemDTO.getBookName());
+                               return new NotFoundException("Book not found: " + itemDTO.getBookName());
+                            });
 
                     BookItem item = new BookItem();
                     item.setBook(book);
@@ -107,19 +127,26 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setOrderStatus(OrderStatus.NEW);
 
         Order savedOrder = orderRepository.save(newOrder);
-
+        log.info("Order created totalPrice={}", total);
         return toDto(savedOrder);
     }
 
     @Override
     @Transactional
     public void confirmOrder(Long orderId, String employeeEmail) {
+        log.warn("Order confirmation orderId={} employee={}", orderId, employeeEmail);
         Order order = orderRepository.findById(orderId)
-                .orElseThrow();
+                .orElseThrow(() -> {
+                    log.warn("Order not found for confirmation id={}", orderId);
+                    return new NotFoundException("Order not found");
+                });
 
         Employee employee = employeeRepository
                 .findByEmail(employeeEmail)
-                .orElseThrow();
+                .orElseThrow(() -> {
+                    log.warn("Employee not found email={}", employeeEmail);
+                    return new NotFoundException("Employee not found");
+                });
 
         order.setEmployee(employee);
         order.setOrderStatus(OrderStatus.CONFIRMED);
@@ -130,10 +157,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void cancelOrder(Long orderId, String clientEmail) {
+        log.warn("Order cancel request orderId={} client={}", orderId, clientEmail);
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Order not found"));
+                .orElseThrow(() -> {
+                    log.warn("Order not found id={}", orderId);
+                    return new NotFoundException("Order not found");
+                });
 
         if (!order.getClient().getEmail().equals(clientEmail)) {
+            log.warn(
+                    "Illegal order cancel attempt orderId={} expectedClient={} actualClient={}",
+                    orderId,
+                    order.getClient().getEmail(),
+                    clientEmail
+            );
             throw new RuntimeException("You cannot cancel someone else's order");
         }
 
@@ -165,6 +202,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public Page<OrderDTO> getAllOrders(OrderFilterDTO filter) {
+        log.debug(
+                "Fetching orders page={} size={} sort={} dir={} status={} search={}",
+                filter.getSafePage(),
+                filter.getSafeSize(),
+                filter.getSafeSort(),
+                filter.getSafeDir(),
+                filter.getStatus(),
+                filter.getSearch()
+        );
+
         Pageable pageable = PageRequest.of(
                 filter.getSafePage(),
                 filter.getSafeSize(),
@@ -197,8 +244,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDTO getOrderById(Long id) {
+        log.info("Fetching order id={}", id);
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> {
+                    log.warn("Order not found id={}", id);
+                    return new RuntimeException("Order not found");
+                });
         return toDto(order);
     }
 }
