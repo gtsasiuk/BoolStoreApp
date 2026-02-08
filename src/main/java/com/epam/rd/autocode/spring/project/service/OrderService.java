@@ -1,6 +1,6 @@
 package com.epam.rd.autocode.spring.project.service;
 
-import com.epam.rd.autocode.spring.project.dto.OrderDTO;
+import com.epam.rd.autocode.spring.project.dto.order.OrderDTO;
 import com.epam.rd.autocode.spring.project.dto.filter.OrderFilterDTO;
 import org.springframework.data.domain.Page;
 

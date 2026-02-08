@@ -1,6 +1,6 @@
 package com.epam.rd.autocode.spring.project.service;
 
-import com.epam.rd.autocode.spring.project.dto.BookDTO;
+import com.epam.rd.autocode.spring.project.dto.order.BookDTO;
 import com.epam.rd.autocode.spring.project.dto.filter.BookFilterDTO;
 import org.springframework.data.domain.Page;
 

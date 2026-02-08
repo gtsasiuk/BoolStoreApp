@@ -1,4 +1,4 @@
-package com.epam.rd.autocode.spring.project.dto;
+package com.epam.rd.autocode.spring.project.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

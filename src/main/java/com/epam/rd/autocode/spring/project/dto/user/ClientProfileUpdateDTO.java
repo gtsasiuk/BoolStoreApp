@@ -1,8 +1,9 @@
-package com.epam.rd.autocode.spring.project.dto;
+package com.epam.rd.autocode.spring.project.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,15 +15,12 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientDTO {
-    @NotBlank
-    private String email;
-    @NotBlank
-    private String password;
-    @NotBlank
+public class ClientProfileUpdateDTO {
+    @NotBlank(message = "{validation.required}")
+    @Size(min = 3, message = "{validation.name}")
     private String name;
-    @NotNull
-    @PositiveOrZero
+
+    @NotNull(message = "{validation.required}")
+    @PositiveOrZero(message = "{validation.balance}")
     private BigDecimal balance;
-    private Boolean blocked;
 }

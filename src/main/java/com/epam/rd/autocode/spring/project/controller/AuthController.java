@@ -1,11 +1,9 @@
 package com.epam.rd.autocode.spring.project.controller;
 
-import com.epam.rd.autocode.spring.project.dto.ClientDTO;
+import com.epam.rd.autocode.spring.project.dto.user.ClientDTO;
 import com.epam.rd.autocode.spring.project.dto.auth.LoginRequestDTO;
 import com.epam.rd.autocode.spring.project.dto.auth.RegisterRequestDTO;
 import com.epam.rd.autocode.spring.project.exception.AlreadyExistException;
-import com.epam.rd.autocode.spring.project.security.CustomUserDetails;
-import com.epam.rd.autocode.spring.project.security.jwt.JwtUtil;
 import com.epam.rd.autocode.spring.project.service.AuthService;
 import com.epam.rd.autocode.spring.project.service.ClientService;
 import jakarta.servlet.http.Cookie;
@@ -13,9 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,4 +1,4 @@
-package com.epam.rd.autocode.spring.project.dto;
+package com.epam.rd.autocode.spring.project.dto.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
