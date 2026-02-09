@@ -55,68 +55,63 @@ public class ProfileController {
         return "profile";
     }
 
-
-    @PostMapping
-    public String updateProfile(Authentication auth, Model model,
-            @Valid @ModelAttribute(value = "employeeForm") EmployeeProfileUpdateDTO employeeForm,
-            BindingResult employeeErrors,
-            @Valid @ModelAttribute(value = "clientForm") ClientProfileUpdateDTO clientForm,
-            BindingResult clientErrors
-    ) {
+    @PostMapping("/client")
+    public String updateClientProfile(Authentication auth, Model model,
+                                      @Valid @ModelAttribute("clientForm") ClientProfileUpdateDTO clientForm,
+                                      BindingResult clientErrors) {
         String email = auth.getName();
-        log.info("Profile update attempt for email={}", email);
+        var c = clientService.getClientByEmail(email);
 
-        if (hasRole(auth, "ROLE_EMPLOYEE")) {
-            var e = employeeService.getEmployeeByEmail(email);
-
-            if (employeeErrors.hasErrors()) {
-                log.warn("Employee profile update validation failed for email={}", email);
-                model.addAttribute("user", new UserProfileViewDTO(
-                        e.getName(), e.getEmail(), null,
-                        e.getPhone(), e.getBirthDate(), e.getBlocked()
-                ));
-                model.addAttribute("employeeForm", employeeForm);
-                model.addAttribute("clientForm", null);
-                model.addAttribute("edit", true);
-                return "profile";
-            }
-
-            employeeService.updateEmployeeByEmail(
-                    email,
-                    new EmployeeDTO(
-                            e.getEmail(), e.getPassword(),
-                            employeeForm.getName(),
-                            employeeForm.getPhone(),
-                            employeeForm.getBirthDate(),
-                            e.getBlocked()
-                    )
-            );
-
-        } else {
-            var c = clientService.getClientByEmail(email);
-
-            if (clientErrors.hasErrors()) {
-                log.warn("Client profile update validation failed for email={}", email);
-                model.addAttribute("user", new UserProfileViewDTO(
-                        c.getName(), c.getEmail(), c.getBalance(),
-                        null, null, c.getBlocked()
-                ));
-                model.addAttribute("clientForm", clientForm);
-                model.addAttribute("employeeForm", null);
-                model.addAttribute("edit", true);
-                return "profile";
-            }
-            clientService.updateClientByEmail(
-                    email,
-                    new ClientDTO(
-                            null, null,
-                            clientForm.getName(),
-                            clientForm.getBalance(),
-                            null
-                    )
-            );
+        if (clientErrors.hasErrors()) {
+            log.warn("Client profile update validation failed for email={}", email);
+            model.addAttribute("user", new UserProfileViewDTO(
+                    c.getName(), c.getEmail(), c.getBalance(),
+                    null, null, c.getBlocked()
+            ));
+            model.addAttribute("clientForm", clientForm);
+            model.addAttribute("employeeForm", null);
+            model.addAttribute("edit", true);
+            return "profile";
         }
-        log.info("Profile updated successfully for email={}", email);
+
+        clientService.updateClientByEmail(
+                email,
+                new ClientDTO(null, null, clientForm.getName(), clientForm.getBalance(), null)
+        );
+        log.info("Client profile updated successfully for email={}", email);
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/employee")
+    public String updateEmployeeProfile(Authentication auth, Model model,
+                                        @Valid @ModelAttribute("employeeForm") EmployeeProfileUpdateDTO employeeForm,
+                                        BindingResult employeeErrors) {
+        String email = auth.getName();
+        var e = employeeService.getEmployeeByEmail(email);
+
+        if (employeeErrors.hasErrors()) {
+            log.warn("Employee profile update validation failed for email={}", email);
+            model.addAttribute("user", new UserProfileViewDTO(
+                    e.getName(), e.getEmail(), null,
+                    e.getPhone(), e.getBirthDate(), e.getBlocked()
+            ));
+            model.addAttribute("employeeForm", employeeForm);
+            model.addAttribute("clientForm", null);
+            model.addAttribute("edit", true);
+            return "profile";
+        }
+
+        employeeService.updateEmployeeByEmail(
+                email,
+                new EmployeeDTO(
+                        e.getEmail(), e.getPassword(),
+                        employeeForm.getName(),
+                        employeeForm.getPhone(),
+                        employeeForm.getBirthDate(),
+                        e.getBlocked()
+                )
+        );
+        log.info("Employee profile updated successfully for email={}", email);
         return "redirect:/profile";
     }
 

@@ -52,7 +52,9 @@ public class BookController {
 
         if (!book.getActive() && !isEmployee) {
             log.warn("Access denied to inactive book name={}", name);
-            throw new AccessDeniedException("Book is not available");
+            model.addAttribute("errorTitle", "error.403.title");
+            model.addAttribute("errorMessage", "error.403.message");
+            return "errors/403";
         }
 
         model.addAttribute("book", book);

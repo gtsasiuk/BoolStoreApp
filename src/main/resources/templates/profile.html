@@ -40,7 +40,7 @@
 
         <div th:if="${edit}">
             <form th:if="${employeeForm != null}"
-                  th:action="@{/profile}"
+                  th:action="@{/profile/employee}"
                   th:object="${employeeForm}"
                   method="post">
 
@@ -67,7 +67,7 @@
             </form>
 
             <form th:if="${clientForm != null}"
-                  th:action="@{/profile}"
+                  th:action="@{/profile/client}"
                   th:object="${clientForm}"
                   method="post">
 
