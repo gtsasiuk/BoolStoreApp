@@ -28,12 +28,5 @@ A monolithic Spring Boot MVC web application simulating a bookstore. Developed a
 
 ## 🛠 Technology Stack  
 - **Backend:** Java, Spring Boot, Spring MVC, Spring Security, Spring Data JPA, MySQL, DTOs, JUnit  
-- **Frontend:** Thymeleaf, HTML5, CSS3, JavaScript  
+- **Frontend:** Thymeleaf, HTML5, CSS3
 - **Testing:** Unit tests for services and controllers using JUnit  
-
-## ⚙️ Setup & Run  
-1. Clone the repository.  
-2. Configure **MySQL database** connection in `application.properties`.  
-3. Run the application:  
-```bash
-./mvnw spring-boot:run
